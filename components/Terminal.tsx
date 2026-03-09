@@ -59,6 +59,8 @@ const COMMANDS: Record<string, { output: string; open?: WindowId }> = {
   light      switch to light mode
   dark       switch to dark mode
   theme      show or set theme (theme [light|dark])
+  exit       close terminal
+  neofetch   same as whoami
 
 Shortcuts: Alt+1–7 open apps, Super+1–7 focus, Esc close window`,
   },
@@ -94,6 +96,8 @@ const COMMAND_NAMES = [
   "light",
   "dark",
   "theme",
+  "exit",
+  "neofetch",
   "sudo",
 ];
 
@@ -262,6 +266,26 @@ export function Terminal({ onOpenWindow, onCloseSelf }: TerminalProps) {
         return;
       }
 
+      if (cmd === "exit") {
+        setOutput((o) => [...o, { type: "out", text: "exit\n" }]);
+        onCloseSelf?.();
+        return;
+      }
+
+      if (cmd === "neofetch") {
+        setOutput((o) => [...o, { type: "out", text: NEOFETCH_OUT.trim() + "\n" }]);
+        return;
+      }
+
+      const raw = line.trim().toLowerCase();
+      if (raw === "rm -rf /" || raw === "sudo rm -rf /" || raw.startsWith("rm -rf /")) {
+        setOutput((o) => [
+          ...o,
+          { type: "out", text: "[ archfolio ] Nice try. This is a portfolio, not a server. 🛡️\n" },
+        ]);
+        return;
+      }
+
       const entry = COMMANDS[cmd];
       if (entry) {
         const out = entry.output;
@@ -286,7 +310,7 @@ export function Terminal({ onOpenWindow, onCloseSelf }: TerminalProps) {
         ]);
       }
     },
-    [onOpenWindow, currentDir, theme, setTheme]
+    [onOpenWindow, onCloseSelf, currentDir, theme, setTheme]
   );
 
   const handleSubmit = useCallback(

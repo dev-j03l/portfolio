@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useCallback } from "react";
+import { useRef, useCallback, useState } from "react";
 import { motion } from "framer-motion";
 import type { WindowState } from "@/hooks/useWindowManager";
 
@@ -50,6 +50,8 @@ export function AppWindow({
   children,
 }: AppWindowProps) {
   const dragStart = useRef<{ x: number; y: number; left: number; top: number } | null>(null);
+  const [dragOffset, setDragOffset] = useState<{ dx: number; dy: number } | null>(null);
+  const rafId = useRef<number | null>(null);
 
   const handleTitlePointerDown = useCallback(
     (e: React.PointerEvent) => {
@@ -62,6 +64,7 @@ export function AppWindow({
         left: state.x,
         top: state.y,
       };
+      setDragOffset(null);
     },
     [state.isMaximized, state.x, state.y]
   );
@@ -71,17 +74,31 @@ export function AppWindow({
       if (!dragStart.current) return;
       const dx = e.clientX - dragStart.current.x;
       const dy = e.clientY - dragStart.current.y;
-      onPositionChange(dragStart.current.left + dx, dragStart.current.top + dy);
+      if (rafId.current !== null) cancelAnimationFrame(rafId.current);
+      rafId.current = requestAnimationFrame(() => {
+        rafId.current = null;
+        setDragOffset({ dx, dy });
+      });
     },
-    [onPositionChange]
+    []
   );
 
   const handleTitlePointerUp = useCallback(
     (e: React.PointerEvent) => {
+      if (rafId.current !== null) {
+        cancelAnimationFrame(rafId.current);
+        rafId.current = null;
+      }
       e.currentTarget.releasePointerCapture(e.pointerId);
+      if (dragStart.current) {
+        const dx = e.clientX - dragStart.current.x;
+        const dy = e.clientY - dragStart.current.y;
+        onPositionChange(dragStart.current.left + dx, dragStart.current.top + dy);
+      }
       dragStart.current = null;
+      setDragOffset(null);
     },
-    []
+    [onPositionChange]
   );
 
   const handleTitleDoubleClick = useCallback(
@@ -95,6 +112,8 @@ export function AppWindow({
   if (state.isMinimized) return null;
 
   const panelHeight = 24;
+  const dx = dragOffset?.dx ?? 0;
+  const dy = dragOffset?.dy ?? 0;
   const style: React.CSSProperties = state.isMaximized
     ? {
         position: "fixed",
@@ -108,8 +127,8 @@ export function AppWindow({
       }
     : {
         position: "fixed",
-        left: state.x,
-        top: state.y,
+        left: state.x + dx,
+        top: state.y + dy,
         width: state.width,
         height: state.height,
         zIndex: state.zIndex,
@@ -123,18 +142,21 @@ export function AppWindow({
       exit={{ opacity: 0, scale: 0.98 }}
       transition={{ duration: 0.2, ease: [0.25, 0.1, 0.25, 1] }}
       style={style}
-      className={`flex flex-col bg-desktop-surface overflow-hidden rounded-none border transition-colors ${
-        isFocused ? "border-desktop-accent ring-1 ring-desktop-accent/30" : "border-desktop-border"
+      className={`flex flex-col bg-desktop-surface overflow-hidden rounded-none border transition-all duration-200 ${
+        isFocused
+          ? "border-desktop-accent ring-1 ring-desktop-accent/30 window-focused"
+          : "border-desktop-border"
       }`}
       onPointerDown={onFocus}
       onClick={onFocus}
     >
       <div
-        className="window-drag flex-shrink-0 h-6 flex items-center justify-between px-1.5 bg-desktop-panel border-b border-desktop-border cursor-grab active:cursor-grabbing"
+        className="window-drag title-bar-gradient flex-shrink-0 h-6 flex items-center justify-between px-1.5 border-b border-desktop-border cursor-grab active:cursor-grabbing touch-none select-none"
         onPointerDown={handleTitlePointerDown}
         onPointerMove={handleTitlePointerMove}
         onPointerUp={handleTitlePointerUp}
         onPointerLeave={handleTitlePointerUp}
+        onPointerCancel={handleTitlePointerUp}
         onDoubleClick={handleTitleDoubleClick}
       >
         <div className="flex items-center gap-0 min-w-0">

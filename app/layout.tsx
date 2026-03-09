@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { JetBrains_Mono } from "next/font/google";
 import { ThemeProvider } from "@/contexts/ThemeContext";
 import "./globals.css";
+import { Analytics } from "@vercel/analytics/next"
 
 const jetbrains = JetBrains_Mono({
   subsets: ["latin"],
@@ -48,6 +49,7 @@ export default function RootLayout({
       </head>
       <body className="font-mono antialiased min-h-screen">
         <ThemeProvider>{children}</ThemeProvider>
+        <Analytics />
       </body>
     </html>
   );

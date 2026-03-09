@@ -7,10 +7,22 @@ import { portfolioData } from "@/data/portfolioData";
 
 function BootScreen({ onDismiss }: { onDismiss: () => void }) {
   const [showPrompt, setShowPrompt] = useState(false);
+  const [progress, setProgress] = useState(0);
 
   useEffect(() => {
     const t = setTimeout(() => setShowPrompt(true), 1500);
     return () => clearTimeout(t);
+  }, []);
+
+  useEffect(() => {
+    const start = Date.now();
+    const duration = 2200;
+    const tick = () => {
+      const elapsed = Date.now() - start;
+      setProgress(Math.min(100, (elapsed / duration) * 100));
+      if (elapsed < duration) requestAnimationFrame(tick);
+    };
+    requestAnimationFrame(tick);
   }, []);
 
   useEffect(() => {
@@ -29,12 +41,22 @@ function BootScreen({ onDismiss }: { onDismiss: () => void }) {
 
   return (
     <motion.div
-      className="fixed inset-0 z-[9999] bg-desktop-bg flex flex-col items-center justify-center font-mono text-desktop-muted text-[13px] cursor-default"
+      className="fixed inset-0 z-[9999] bg-desktop-bg flex flex-col items-center justify-center font-mono text-desktop-muted text-[13px] cursor-default overflow-hidden"
       initial={{ opacity: 1 }}
       exit={{ opacity: 0 }}
       transition={{ duration: 0.3 }}
     >
-      <div className="space-y-0.5 text-left w-full max-w-sm px-4">
+      {/* Scanline overlay */}
+      <div
+        className="absolute inset-0 pointer-events-none z-10 opacity-[0.04]"
+        aria-hidden
+      >
+        <div
+          className="boot-scanline h-px w-full bg-desktop-accent"
+          style={{ boxShadow: "0 0 20px 2px var(--accent)" }}
+        />
+      </div>
+      <div className="space-y-0.5 text-left w-full max-w-sm px-4 relative z-0">
         <motion.p
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
@@ -79,6 +101,16 @@ function BootScreen({ onDismiss }: { onDismiss: () => void }) {
         >
           [    1.301122] Guest session — exploring Joel&apos;s portfolio.
         </motion.p>
+        {/* Progress bar */}
+        <div className="mt-4 h-0.5 w-full bg-desktop-border overflow-hidden rounded-full">
+          <motion.div
+            className="h-full bg-desktop-accent rounded-full"
+            initial={{ width: 0 }}
+            animate={{ width: `${progress}%` }}
+            transition={{ duration: 0.15 }}
+            style={{ maxWidth: "100%" }}
+          />
+        </div>
         {showPrompt && (
           <motion.p
             initial={{ opacity: 0 }}

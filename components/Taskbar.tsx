@@ -1,5 +1,6 @@
 "use client";
 
+import { motion } from "framer-motion";
 import { DesktopIconSvg } from "./DesktopIcons";
 import type { WindowId } from "@/hooks/useWindowManager";
 import type { WindowState } from "@/hooks/useWindowManager";
@@ -52,7 +53,7 @@ export function Taskbar({
       role="group"
       aria-label="Window list"
     >
-      {ordered.map((id) => {
+      {ordered.map((id, index) => {
         const state = windows[id];
         const config = WINDOW_CONFIG[id];
         if (!state || !config) return null;
@@ -60,11 +61,14 @@ export function Taskbar({
         const isMinimized = state.isMinimized;
 
         return (
-          <div
+          <motion.div
             key={id}
-            className={`flex items-center gap-1.5 pl-2 pr-1 py-1 min-w-0 max-w-[140px] border transition-colors border-b-2 ${
+            initial={{ opacity: 0, y: 4 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: index * 0.03, duration: 0.2 }}
+            className={`taskbar-item relative flex items-center gap-1.5 pl-2 pr-1 py-1 min-w-0 max-w-[140px] border border-b-2 ${
               isFocused
-                ? "bg-desktop-border border-desktop-border-focus border-b-desktop-accent"
+                ? "bg-desktop-border border-desktop-border-focus border-b-desktop-accent taskbar-item-focus-pulse"
                 : isMinimized
                   ? "bg-desktop-surface/80 border-transparent border-b-transparent hover:bg-desktop-border"
                   : "border-transparent border-b-transparent hover:bg-desktop-border"
@@ -103,7 +107,7 @@ export function Taskbar({
             >
               ×
             </button>
-          </div>
+          </motion.div>
         );
       })}
     </footer>

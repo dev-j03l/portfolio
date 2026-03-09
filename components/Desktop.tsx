@@ -1,6 +1,7 @@
 "use client";
 
-import { useEffect, useCallback } from "react";
+import { useEffect, useCallback, useState } from "react";
+import { motion } from "framer-motion";
 import { useWindowManager, type WindowId } from "@/hooks/useWindowManager";
 import { TopBar } from "./TopBar";
 import { Taskbar } from "./Taskbar";
@@ -13,6 +14,14 @@ import { ResumeViewer } from "./ResumeViewer";
 import { ContactPanel } from "./ContactPanel";
 import { Terminal } from "./Terminal";
 import { AnimatePresence } from "framer-motion";
+import { ShortcutOverlay } from "./ShortcutOverlay";
+import { KonamiToast, useKonamiCode } from "./KonamiToast";
+
+const DESKTOP_HINTS = [
+  "Exploring as a guest. Start with README, experience, or resume.",
+  "Tip: Open Terminal and type help for a quick tour.",
+  "Recruiters: Alt+1–7 opens apps, Esc closes the focused window.",
+];
 
 const DESKTOP_ICONS: DesktopIconConfig[] = [
   { id: "about", label: "README.md", icon: "file" },
@@ -59,10 +68,30 @@ export function Desktop() {
   } = useWindowManager();
 
   const activeTitle = focusedId ? windows[focusedId]?.title ?? null : null;
+  const [hintIndex, setHintIndex] = useState(0);
+  const [shortcutOverlayOpen, setShortcutOverlayOpen] = useState(false);
+  const [konamiShow, setKonamiShow] = useState(false);
+
+  useKonamiCode(() => setKonamiShow(true));
+
+  useEffect(() => {
+    if (openIds.size > 0) return;
+    const id = setInterval(
+      () => setHintIndex((i) => (i + 1) % DESKTOP_HINTS.length),
+      5000
+    );
+    return () => clearInterval(id);
+  }, [openIds.size]);
 
   const handleKeyDown = useCallback(
     (e: KeyboardEvent) => {
+      if (e.key === "?" && !e.ctrlKey && !e.metaKey && !e.altKey) {
+        setShortcutOverlayOpen((open) => !open);
+        e.preventDefault();
+        return;
+      }
       if (e.key === "Escape") {
+        setShortcutOverlayOpen(false);
         if (focusedId) {
           close(focusedId);
           e.preventDefault();
@@ -102,19 +131,39 @@ export function Desktop() {
       <div className="flex-1 relative overflow-hidden pt-4 pl-4 flex flex-col z-[1]">
         <div className="flex flex-wrap gap-3 content-start">
           {DESKTOP_ICONS.map((config, index) => (
-            <DesktopIcon
+            <motion.div
               key={config.id}
-              config={config}
-              shortcut={index < 7 ? `Alt+${index + 1}` : undefined}
-              onOpen={open}
-            />
+              initial={{ opacity: 0, y: 8 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{
+                delay: index * 0.04,
+                duration: 0.25,
+                ease: [0.25, 0.1, 0.25, 1],
+              }}
+            >
+              <DesktopIcon
+                config={config}
+                shortcut={index < 7 ? `Alt+${index + 1}` : undefined}
+                isOpen={openIds.has(config.id)}
+                onOpen={open}
+              />
+            </motion.div>
           ))}
         </div>
 
         {openIds.size === 0 && (
-          <p className="mt-8 text-desktop-muted text-[11px] max-w-sm">
-            Exploring as a guest. Click an icon to open, or open Terminal and type <kbd className="px-1 py-0.5 bg-desktop-panel border border-desktop-border text-desktop-text">help</kbd> for a quick tour. Start with README, experience, or resume.
-          </p>
+          <motion.p
+            key={hintIndex}
+            initial={{ opacity: 0, y: 4 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.3 }}
+            className="mt-8 text-desktop-muted text-[11px] max-w-sm"
+          >
+            {DESKTOP_HINTS[hintIndex]}{" "}
+            <span className="text-desktop-dim">
+              (Press <kbd className="px-1 py-0.5 bg-desktop-panel border border-desktop-border text-desktop-text text-[10px]">?</kbd> for shortcuts)
+            </span>
+          </motion.p>
         )}
 
         <AnimatePresence>
@@ -150,6 +199,12 @@ export function Desktop() {
         onClose={close}
         onRestore={restore}
       />
+
+      <ShortcutOverlay
+        isOpen={shortcutOverlayOpen}
+        onClose={() => setShortcutOverlayOpen(false)}
+      />
+      <KonamiToast show={konamiShow} onDone={() => setKonamiShow(false)} />
     </div>
   );
 }
