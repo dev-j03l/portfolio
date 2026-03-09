@@ -2,7 +2,7 @@
 
 const DEFAULT_SIZE = 28;
 
-export type DesktopIconType = "file" | "folder" | "script" | "pdf" | "terminal";
+export type DesktopIconType = "file" | "folder" | "script" | "pdf" | "terminal" | "browser";
 
 type IconProps = { className?: string; size?: number };
 
@@ -112,12 +112,34 @@ export function IconTerminal({ className, size = DEFAULT_SIZE }: IconProps) {
   );
 }
 
+export function IconBrowser({ className, size = DEFAULT_SIZE }: IconProps) {
+  return (
+    <svg
+      width={size}
+      height={size}
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.5"
+      strokeLinecap="square"
+      strokeLinejoin="miter"
+      className={className}
+      aria-hidden
+    >
+      <circle cx="12" cy="12" r="10" />
+      <path d="M2 12h20" />
+      <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" />
+    </svg>
+  );
+}
+
 const iconMap: Record<DesktopIconType, React.ComponentType<IconProps>> = {
   file: IconFile,
   folder: IconFolder,
   script: IconScript,
   pdf: IconPdf,
   terminal: IconTerminal,
+  browser: IconBrowser,
 };
 
 export function DesktopIconSvg({

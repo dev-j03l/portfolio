@@ -7,7 +7,7 @@ import type { WindowState } from "@/hooks/useWindowManager";
 
 const WINDOW_CONFIG: Record<
   WindowId,
-  { label: string; icon: "file" | "folder" | "script" | "pdf" | "terminal" }
+  { label: string; icon: "file" | "folder" | "script" | "pdf" | "terminal" | "browser" }
 > = {
   about: { label: "about.txt", icon: "file" },
   experience: { label: "experience/", icon: "folder" },
@@ -16,6 +16,7 @@ const WINDOW_CONFIG: Record<
   resume: { label: "resume.pdf", icon: "pdf" },
   contact: { label: "contact.sh", icon: "script" },
   terminal: { label: "terminal", icon: "terminal" },
+  browser: { label: "Links", icon: "browser" },
 };
 
 const ORDER: WindowId[] = [
@@ -26,6 +27,7 @@ const ORDER: WindowId[] = [
   "resume",
   "contact",
   "terminal",
+  "browser",
 ];
 
 interface TaskbarProps {

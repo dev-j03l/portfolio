@@ -58,11 +58,16 @@ const COMMANDS: Record<string, { output: string; open?: WindowId }> = {
   fortune    random quote
   light      switch to light mode
   dark       switch to dark mode
-  theme      show or set theme (theme [light|dark])
+  theme      show or set theme (theme [light|dark|system])
   exit       close terminal
   neofetch   same as whoami
+  browser    open Links (search + quick links)
+  history    show command history
+  hostname   print system hostname
+  uptime     show session uptime
+  uname      print system info
 
-Shortcuts: Alt+1–7 open apps, Super+1–7 focus, Esc close window`,
+Shortcuts: Alt+1–8 open apps, Super+1–8 focus, Esc close window`,
   },
 
   about: { output: "Opening about.txt...", open: "about" },
@@ -71,6 +76,7 @@ Shortcuts: Alt+1–7 open apps, Super+1–7 focus, Esc close window`,
   skills: { output: "Opening skills.json...", open: "skills" },
   resume: { output: "Opening resume.pdf...", open: "resume" },
   contact: { output: "Running contact.sh...", open: "contact" },
+  browser: { output: "Opening Links...", open: "browser" },
 
   clear: { output: "" },
   whoami: { output: NEOFETCH_OUT.trim() },
@@ -98,6 +104,11 @@ const COMMAND_NAMES = [
   "theme",
   "exit",
   "neofetch",
+  "browser",
+  "history",
+  "hostname",
+  "uptime",
+  "uname",
   "sudo",
 ];
 
@@ -146,6 +157,7 @@ export function Terminal({ onOpenWindow, onCloseSelf }: TerminalProps) {
   const inputRef = useRef<HTMLInputElement>(null);
   const scrollRef = useRef<HTMLDivElement>(null);
   const cursorAfterUpdate = useRef<number | null>(null);
+  const sessionStartRef = useRef<number>(Date.now());
 
   const runCommand = useCallback(
     (line: string) => {
@@ -257,10 +269,13 @@ export function Terminal({ onOpenWindow, onCloseSelf }: TerminalProps) {
         } else if (next === "dark") {
           setTheme("dark");
           setOutput((o) => [...o, { type: "out", text: "Theme set to dark.\n" }]);
+        } else if (next === "system") {
+          setTheme("system");
+          setOutput((o) => [...o, { type: "out", text: "Theme set to system (follows OS).\n" }]);
         } else {
           setOutput((o) => [
             ...o,
-            { type: "out", text: `Current theme: ${theme}. Use 'theme light' or 'theme dark' to change.\n` },
+            { type: "out", text: `Current theme: ${theme}. Use 'theme light', 'theme dark', or 'theme system'.\n` },
           ]);
         }
         return;
@@ -274,6 +289,43 @@ export function Terminal({ onOpenWindow, onCloseSelf }: TerminalProps) {
 
       if (cmd === "neofetch") {
         setOutput((o) => [...o, { type: "out", text: NEOFETCH_OUT.trim() + "\n" }]);
+        return;
+      }
+
+      if (cmd === "history") {
+        const lines = history.map((h, i) => `  ${i + 1}  ${h}`).join("\n");
+        setOutput((o) => [...o, { type: "out", text: (lines || "  (empty)") + "\n" }]);
+        return;
+      }
+
+      if (cmd === "hostname") {
+        setOutput((o) => [...o, { type: "out", text: "archfolio\n" }]);
+        return;
+      }
+
+      if (cmd === "uptime") {
+        const sec = Math.floor((Date.now() - sessionStartRef.current) / 1000);
+        const m = Math.floor(sec / 60);
+        const s = sec % 60;
+        const up = m > 0 ? ` ${m} min${m !== 1 ? "s" : ""}` : "";
+        const upStr = ` up ${up}${s > 0 ? ` ${s} sec` : ""}`.trim() || " up 0 sec";
+        setOutput((o) => [
+          ...o,
+          { type: "out", text: ` ${new Date().toLocaleTimeString()}  ${upStr}\n` },
+        ]);
+        return;
+      }
+
+      if (cmd === "uname") {
+        const unameArg = (arg ?? "").toLowerCase();
+        if (unameArg === "-a" || unameArg === "--all") {
+          setOutput((o) => [
+            ...o,
+            { type: "out", text: "Archfolio archfolio 1.0 portfolio React/Next.js x86_64 GNU/Linux\n" },
+          ]);
+        } else {
+          setOutput((o) => [...o, { type: "out", text: "Archfolio\n" }]);
+        }
         return;
       }
 
@@ -310,7 +362,7 @@ export function Terminal({ onOpenWindow, onCloseSelf }: TerminalProps) {
         ]);
       }
     },
-    [onOpenWindow, onCloseSelf, currentDir, theme, setTheme]
+    [onOpenWindow, onCloseSelf, currentDir, theme, setTheme, history]
   );
 
   const handleSubmit = useCallback(

@@ -13,6 +13,7 @@ import { SkillsWindow } from "./SkillsWindow";
 import { ResumeViewer } from "./ResumeViewer";
 import { ContactPanel } from "./ContactPanel";
 import { Terminal } from "./Terminal";
+import { BrowserWindow } from "./BrowserWindow";
 import { AnimatePresence } from "framer-motion";
 import { ShortcutOverlay } from "./ShortcutOverlay";
 import { KonamiToast, useKonamiCode } from "./KonamiToast";
@@ -20,7 +21,7 @@ import { KonamiToast, useKonamiCode } from "./KonamiToast";
 const DESKTOP_HINTS = [
   "Exploring as a guest. Start with README, experience, or resume.",
   "Tip: Open Terminal and type help for a quick tour.",
-  "Recruiters: Alt+1–7 opens apps, Esc closes the focused window.",
+  "Recruiters: Alt+1–8 opens apps, Esc closes the focused window.",
 ];
 
 const DESKTOP_ICONS: DesktopIconConfig[] = [
@@ -31,6 +32,7 @@ const DESKTOP_ICONS: DesktopIconConfig[] = [
   { id: "resume", label: "resume.pdf", icon: "pdf" },
   { id: "contact", label: "contact.sh", icon: "script" },
   { id: "terminal", label: "terminal", icon: "terminal" },
+  { id: "browser", label: "Links", icon: "browser" },
 ];
 
 const WINDOW_CONTENT: Record<
@@ -50,6 +52,7 @@ const WINDOW_CONTENT: Record<
     onOpenWindow ? (
       <Terminal onOpenWindow={onOpenWindow} onCloseSelf={onCloseSelf} />
     ) : null,
+  browser: () => <BrowserWindow />,
 };
 
 export function Desktop() {
@@ -98,7 +101,7 @@ export function Desktop() {
         }
         return;
       }
-      const num = e.key >= "1" && e.key <= "7" ? parseInt(e.key, 10) - 1 : -1;
+      const num = e.key >= "1" && e.key <= "8" ? parseInt(e.key, 10) - 1 : -1;
       const config = num >= 0 ? DESKTOP_ICONS[num] : null;
 
       if (e.altKey && config) {
@@ -143,7 +146,7 @@ export function Desktop() {
             >
               <DesktopIcon
                 config={config}
-                shortcut={index < 7 ? `Alt+${index + 1}` : undefined}
+                shortcut={index < 8 ? `Alt+${index + 1}` : undefined}
                 isOpen={openIds.has(config.id)}
                 onOpen={open}
               />

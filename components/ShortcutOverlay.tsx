@@ -3,8 +3,8 @@
 import { motion, AnimatePresence } from "framer-motion";
 
 const SHORTCUTS = [
-  { keys: "Alt + 1–7", desc: "Open app (README, experience, … terminal)" },
-  { keys: "Super + 1–7", desc: "Focus or open app" },
+  { keys: "Alt + 1–8", desc: "Open app (README, experience, … terminal, Links)" },
+  { keys: "Super + 1–8", desc: "Focus or open app" },
   { keys: "Esc", desc: "Close focused window" },
   { keys: "?", desc: "Show this overlay" },
 ];

@@ -9,7 +9,8 @@ export type WindowId =
   | "skills"
   | "resume"
   | "contact"
-  | "terminal";
+  | "terminal"
+  | "browser";
 
 export interface WindowState {
   id: WindowId;
@@ -93,6 +94,16 @@ const defaultWindows: Record<WindowId, Omit<WindowState, "zIndex">> = {
     y: 150,
     width: 640,
     height: 400,
+  },
+  browser: {
+    id: "browser",
+    title: "Links",
+    isMinimized: false,
+    isMaximized: false,
+    x: 60,
+    y: 60,
+    width: 800,
+    height: 520,
   },
 };
 

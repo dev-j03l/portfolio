@@ -41,11 +41,11 @@ export default function RootLayout({
   return (
     <html lang="en" className={jetbrains.variable} suppressHydrationWarning>
       <head>
-        <script
-          dangerouslySetInnerHTML={{
-            __html: `(function(){var t=localStorage.getItem("archfolio-theme");if(t==="light"||t==="dark")document.documentElement.setAttribute("data-theme",t);})();`,
-          }}
-        />
+<script
+            dangerouslySetInnerHTML={{
+              __html: `(function(){var t=localStorage.getItem("archfolio-theme");if(t==="light"||t==="dark")document.documentElement.setAttribute("data-theme",t);else if(t==="system")document.documentElement.setAttribute("data-theme",window.matchMedia("(prefers-color-scheme: light)").matches?"light":"dark");})();`,
+            }}
+          />
       </head>
       <body className="font-mono antialiased min-h-screen">
         <ThemeProvider>{children}</ThemeProvider>
