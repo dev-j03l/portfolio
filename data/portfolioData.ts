@@ -122,6 +122,7 @@ Alongside development, I have experience mentoring students as a module demonstr
       tech: "Python, Web Scraping, Pandas, Monte Carlo Simulation",
       description:
         "Predictive model for Premier League outcomes using Monte Carlo simulations and player-level statistics. Simulated full seasons to forecast standings, goal statistics, and win/draw/loss probabilities.",
+      link: "https://github.com/ZichengLiang/JLLA_Probablity",
     },
     {
       name: "Project Management Dashboard",
@@ -134,6 +135,13 @@ Alongside development, I have experience mentoring students as a module demonstr
       tech: "C, Python, ROS 2.0, EUFS Simulator",
       description:
         "Control algorithms for an Autonomous Driving System using ROS 2.0 and EUFS Simulator; optimized for FSUK benchmark performance.",
+    },
+    {
+      name: "D&D Storytelling with Gemini",
+      tech: "Gemini, React, Firebase",
+      description:
+        "Gemini-powered prototype to increase immersion and storytelling for Dungeons and Dragons. Built at Google AI Hackathon (Google IE) with a team of 5.",
+      link: "https://github.com/LMol-4/Team8GoogleAIHackathon",
     },
   ] as ProjectItem[],
 

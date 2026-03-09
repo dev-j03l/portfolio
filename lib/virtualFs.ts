@@ -33,6 +33,7 @@ function shortProjectName(name: string): string {
   if (name.includes("Premier League")) return "premier-league";
   if (name.includes("Project Management")) return "project-dashboard";
   if (name.includes("Formula Trinity ADS")) return "formula-ads";
+  if (name.includes("D&D Storytelling")) return "dnd-gemini";
   return slug(name).slice(0, 24);
 }
 
@@ -86,6 +87,13 @@ function experienceFileName(e: ExperienceItem, i: number): string {
 
 function projectFileName(p: ProjectItem, i: number): string {
   return `${String(i + 1).padStart(2, "0")}-${shortProjectName(p.name)}.txt`;
+}
+
+const KNOWN_DIRS = ["/home/joel", "/home/joel/experience", "/home/joel/projects"];
+
+export function isDirectory(path: string): boolean {
+  const normalized = path.replace(/\/+$/, "") || "/";
+  return KNOWN_DIRS.some((d) => d === normalized);
 }
 
 export function getListing(path: string): ListingEntry[] {
@@ -152,14 +160,23 @@ export function getProjectFiles(): { name: string; content: string }[] {
   }));
 }
 
+/** Resolve a path (may include ., .., multiple segments) relative to cwd. Stays under /home/joel. */
 export function resolvePath(cwd: string, arg: string): string {
-  if (arg === "..") {
-    if (cwd === "/home/joel/experience" || cwd === "/home/joel/projects")
-      return "/home/joel";
-    return "/home/joel";
+  const trimmed = arg.replace(/\/+$/, "").trim() || ".";
+  const base = cwd.replace(/\/+$/, "") || "/home/joel";
+  const fullPath = trimmed.startsWith("/")
+    ? "/home/joel/" + trimmed.replace(/^\/+/, "").replace(/^home\/joel\/?/, "")
+    : base + "/" + trimmed;
+  const segments = fullPath.split("/").filter(Boolean);
+  const resolved: string[] = [];
+  for (const seg of segments) {
+    if (seg === "..") {
+      if (resolved.length > 0) resolved.pop();
+    } else if (seg !== ".") {
+      resolved.push(seg);
+    }
   }
-  if (arg === "experience" || arg === "projects") return `/home/joel/${arg}`;
-  if (arg.startsWith("/")) return arg;
-  const base = cwd.endsWith("/") ? cwd : cwd + "/";
-  return base + arg;
+  const result = "/" + resolved.join("/");
+  if (!result.startsWith("/home/joel")) return "/home/joel";
+  return result || "/home/joel";
 }

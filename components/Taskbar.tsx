@@ -62,12 +62,12 @@ export function Taskbar({
         return (
           <div
             key={id}
-            className={`flex items-center gap-1.5 pl-2 pr-1 py-1 min-w-0 max-w-[140px] border transition-colors ${
+            className={`flex items-center gap-1.5 pl-2 pr-1 py-1 min-w-0 max-w-[140px] border transition-colors border-b-2 ${
               isFocused
-                ? "bg-desktop-border border-desktop-border-focus"
+                ? "bg-desktop-border border-desktop-border-focus border-b-desktop-accent"
                 : isMinimized
-                  ? "bg-desktop-surface/80 border-transparent hover:bg-desktop-border"
-                  : "border-transparent hover:bg-desktop-border"
+                  ? "bg-desktop-surface/80 border-transparent border-b-transparent hover:bg-desktop-border"
+                  : "border-transparent border-b-transparent hover:bg-desktop-border"
             }`}
           >
             <button

@@ -5,10 +5,31 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Desktop } from "@/components/Desktop";
 import { portfolioData } from "@/data/portfolioData";
 
-function BootScreen() {
+function BootScreen({ onDismiss }: { onDismiss: () => void }) {
+  const [showPrompt, setShowPrompt] = useState(false);
+
+  useEffect(() => {
+    const t = setTimeout(() => setShowPrompt(true), 1500);
+    return () => clearTimeout(t);
+  }, []);
+
+  useEffect(() => {
+    const handle = () => {
+      onDismiss();
+    };
+    window.addEventListener("keydown", handle);
+    window.addEventListener("click", handle);
+    window.addEventListener("touchstart", handle, { passive: true });
+    return () => {
+      window.removeEventListener("keydown", handle);
+      window.removeEventListener("click", handle);
+      window.removeEventListener("touchstart", handle);
+    };
+  }, [onDismiss]);
+
   return (
     <motion.div
-      className="fixed inset-0 z-[9999] bg-desktop-bg flex flex-col items-center justify-center font-mono text-desktop-muted text-[13px]"
+      className="fixed inset-0 z-[9999] bg-desktop-bg flex flex-col items-center justify-center font-mono text-desktop-muted text-[13px] cursor-default"
       initial={{ opacity: 1 }}
       exit={{ opacity: 0 }}
       transition={{ duration: 0.3 }}
@@ -50,6 +71,16 @@ function BootScreen() {
         >
           [    1.254891] Welcome, {portfolioData.profile.name.split(" ")[0]}.
         </motion.p>
+        {showPrompt && (
+          <motion.p
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0 }}
+            className="text-desktop-dim text-[11px] mt-4"
+          >
+            Press any key or tap to continue
+          </motion.p>
+        )}
       </div>
     </motion.div>
   );
@@ -130,6 +161,16 @@ function MobilePortfolio() {
                 <p className="text-[13px] mt-1 text-desktop-text/90">
                   {proj.description}
                 </p>
+                {proj.link && (
+                  <a
+                    href={proj.link}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-desktop-accent text-[12px] mt-2 inline-block hover:underline active:underline"
+                  >
+                    View project →
+                  </a>
+                )}
               </div>
             ))}
           </div>
@@ -218,7 +259,7 @@ export default function Home() {
   const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => {
-    const t = setTimeout(() => setBootDone(true), 1600);
+    const t = setTimeout(() => setBootDone(true), 4000);
     return () => clearTimeout(t);
   }, []);
 
@@ -237,7 +278,7 @@ export default function Home() {
   return (
     <>
       <AnimatePresence mode="wait">
-        {!bootDone && <BootScreen />}
+        {!bootDone && <BootScreen onDismiss={() => setBootDone(true)} />}
       </AnimatePresence>
 
       {bootDone && (

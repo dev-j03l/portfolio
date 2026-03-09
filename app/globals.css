@@ -2,16 +2,32 @@
 @tailwind components;
 @tailwind utilities;
 
-:root {
+:root,
+[data-theme="dark"] {
   --desktop-bg: #0a0a0c;
   --surface: #0f0f12;
   --panel: #121215;
   --border: #252528;
+  --border-focus: #353538;
   --accent: #3d7fc6;
   --cyan: #4a9b9b;
   --text: #e2e2e5;
   --muted: #6b6b73;
+  --dim: #4a4a52;
   --font-mono: "JetBrains Mono", ui-monospace, monospace;
+}
+
+[data-theme="light"] {
+  --desktop-bg: #e8e9ec;
+  --surface: #f0f1f4;
+  --panel: #d8d9dd;
+  --border: #b8bac2;
+  --border-focus: #8a8d96;
+  --accent: #2563a8;
+  --cyan: #0d7a7a;
+  --text: #1a1b1e;
+  --muted: #5c5e66;
+  --dim: #7a7c85;
 }
 
 * {
@@ -35,8 +51,95 @@ body.portfolio-mobile {
   user-select: text;
 }
 
+/* Cool desktop background: gradient + grid + subtle glow */
 .wallpaper {
   background-color: var(--desktop-bg);
+  position: relative;
+  overflow: hidden;
+}
+
+.wallpaper::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 120% 80% at 70% 20%, rgba(61, 127, 198, 0.06) 0%, transparent 50%),
+    radial-gradient(ellipse 100% 100% at 30% 80%, rgba(74, 155, 155, 0.04) 0%, transparent 45%),
+    radial-gradient(ellipse 80% 60% at 50% 50%, rgba(10, 10, 12, 0.95) 0%, transparent 70%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+[data-theme="light"] .wallpaper::before {
+  background:
+    radial-gradient(ellipse 120% 80% at 70% 20%, rgba(37, 99, 168, 0.08) 0%, transparent 50%),
+    radial-gradient(ellipse 100% 100% at 30% 80%, rgba(13, 122, 122, 0.06) 0%, transparent 45%),
+    radial-gradient(ellipse 80% 60% at 50% 50%, rgba(232, 233, 236, 0.9) 0%, transparent 70%);
+}
+
+.wallpaper::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(61, 127, 198, 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(61, 127, 198, 0.03) 1px, transparent 1px);
+  background-size: 24px 24px;
+  pointer-events: none;
+  z-index: 0;
+}
+
+[data-theme="light"] .wallpaper::after {
+  background-image:
+    linear-gradient(rgba(37, 99, 168, 0.08) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(37, 99, 168, 0.08) 1px, transparent 1px);
+}
+
+/* Slow ambient glow animation */
+@keyframes wallpaper-glow {
+  0%, 100% { opacity: 0.6; transform: translate(0, 0) scale(1); }
+  33% { opacity: 0.8; transform: translate(2%, -1%) scale(1.02); }
+  66% { opacity: 0.5; transform: translate(-1%, 2%) scale(0.98); }
+}
+
+.wallpaper-glow {
+  position: absolute;
+  width: 60vmax;
+  height: 60vmax;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  background: radial-gradient(
+    circle,
+    rgba(61, 127, 198, 0.08) 0%,
+    rgba(74, 155, 155, 0.04) 25%,
+    transparent 60%
+  );
+  pointer-events: none;
+  z-index: 0;
+  animation: wallpaper-glow 18s ease-in-out infinite;
+}
+
+[data-theme="light"] .wallpaper-glow {
+  background: radial-gradient(
+    circle,
+    rgba(37, 99, 168, 0.06) 0%,
+    rgba(13, 122, 122, 0.04) 25%,
+    transparent 60%
+  );
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .wallpaper-glow {
+    animation: none;
+    opacity: 0.7;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .terminal-cursor::after {
+    animation: none;
+  }
 }
 
 .window-drag {

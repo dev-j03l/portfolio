@@ -2,7 +2,8 @@
 
 import { useRef, useState, useCallback, useEffect } from "react";
 import type { WindowId } from "@/hooks/useWindowManager";
-import { getListing, getFileContent, getFileCompletions, resolvePath } from "@/lib/virtualFs";
+import { useTheme } from "@/contexts/ThemeContext";
+import { getListing, getFileContent, getFileCompletions, resolvePath, isDirectory } from "@/lib/virtualFs";
 
 function promptForDir(dir: string): string {
   const short = dir === "/home/joel" ? "~" : "~" + dir.slice(10);
@@ -52,6 +53,10 @@ const COMMANDS: Record<string, { output: string; open?: WindowId }> = {
   whoami     neofetch-style profile summary
   date       show date and time
   echo       print arguments
+  fortune    random quote
+  light      switch to light mode
+  dark       switch to dark mode
+  theme      show or set theme (theme [light|dark])
 
 Shortcuts: Alt+1–7 open apps, Super+1–7 focus, Esc close window`,
   },
@@ -83,7 +88,24 @@ const COMMAND_NAMES = [
   "whoami",
   "date",
   "echo",
+  "fortune",
+  "light",
+  "dark",
+  "theme",
   "sudo",
+];
+
+const FORTUNES = [
+  "The only way to learn a new programming language is by writing programs in it. — Dennis Ritchie",
+  "First, solve the problem. Then, write the code. — John Johnson",
+  "Any fool can write code that a computer can understand. Good programmers write code that humans can understand. — Martin Fowler",
+  "Talk is cheap. Show me the code. — Linus Torvalds",
+  "It's not a bug — it's an undocumented feature. — Anonymous",
+  "Make it work, make it right, make it fast. — Kent Beck",
+  "The best error message is the one that never shows up. — Thomas Fuchs",
+  "Code is like humor. When you have to explain it, it's bad. — Cory House",
+  "Simplicity is the soul of efficiency. — Austin Freeman",
+  "One man's constant is another man's variable. — Alan Perlis",
 ];
 
 const CD_DIRS = ["experience", "projects"];
@@ -107,6 +129,7 @@ interface TerminalProps {
 }
 
 export function Terminal({ onOpenWindow, onCloseSelf }: TerminalProps) {
+  const { theme, setTheme } = useTheme();
   const [currentDir, setCurrentDir] = useState("/home/joel");
   const [history, setHistory] = useState<string[]>([]);
   const [output, setOutput] = useState<{ type: "in" | "out"; text: string }[]>([
@@ -123,8 +146,8 @@ export function Terminal({ onOpenWindow, onCloseSelf }: TerminalProps) {
       const { cmd, arg } = parseCommand(line);
 
       if (cmd === "cd") {
-        const next = resolvePath(currentDir, arg || "");
-        if (next === "/home/joel" || next === "/home/joel/experience" || next === "/home/joel/projects") {
+        const next = resolvePath(currentDir, arg || ".");
+        if (isDirectory(next)) {
           setCurrentDir(next);
           setOutput((o) => [...o, { type: "out", text: "" }]);
         } else {
@@ -137,7 +160,15 @@ export function Terminal({ onOpenWindow, onCloseSelf }: TerminalProps) {
       }
 
       if (cmd === "ls") {
-        const listing = getListing(currentDir);
+        const targetDir = arg ? resolvePath(currentDir, arg) : currentDir;
+        if (!isDirectory(targetDir)) {
+          setOutput((o) => [
+            ...o,
+            { type: "out", text: `ls: ${arg}: No such file or directory\n` },
+          ]);
+          return;
+        }
+        const listing = getListing(targetDir);
         const formatted = listing.map((e) => (e.type === "dir" ? e.name + "/" : e.name)).join("  ");
         setOutput((o) => [...o, { type: "out", text: (formatted || "(empty)") + "\n" }]);
         return;
@@ -180,24 +211,6 @@ export function Terminal({ onOpenWindow, onCloseSelf }: TerminalProps) {
         return;
       }
 
-      if (cmd === "cd") {
-        if (arg === "projects" || arg === "experience") {
-          setOutput((o) => [
-            ...o,
-            { type: "out", text: `/home/joel/${arg}\n` },
-          ]);
-        } else {
-          setOutput((o) => [
-            ...o,
-            {
-              type: "out",
-              text: `cd: ${arg || "''"}: No such file or directory\n`,
-            },
-          ]);
-        }
-        return;
-      }
-
       if (cmd === "date") {
         setOutput((o) => [
           ...o,
@@ -209,6 +222,41 @@ export function Terminal({ onOpenWindow, onCloseSelf }: TerminalProps) {
       if (cmd === "echo") {
         const rest = line.replace(/^echo\s+/i, "").trim();
         setOutput((o) => [...o, { type: "out", text: rest + "\n" }]);
+        return;
+      }
+
+      if (cmd === "fortune") {
+        const quote = FORTUNES[Math.floor(Math.random() * FORTUNES.length)];
+        setOutput((o) => [...o, { type: "out", text: "\n  " + quote + "\n\n" }]);
+        return;
+      }
+
+      if (cmd === "light") {
+        setTheme("light");
+        setOutput((o) => [...o, { type: "out", text: "Theme set to light.\n" }]);
+        return;
+      }
+
+      if (cmd === "dark") {
+        setTheme("dark");
+        setOutput((o) => [...o, { type: "out", text: "Theme set to dark.\n" }]);
+        return;
+      }
+
+      if (cmd === "theme") {
+        const next = (arg ?? "").toLowerCase();
+        if (next === "light") {
+          setTheme("light");
+          setOutput((o) => [...o, { type: "out", text: "Theme set to light.\n" }]);
+        } else if (next === "dark") {
+          setTheme("dark");
+          setOutput((o) => [...o, { type: "out", text: "Theme set to dark.\n" }]);
+        } else {
+          setOutput((o) => [
+            ...o,
+            { type: "out", text: `Current theme: ${theme}. Use 'theme light' or 'theme dark' to change.\n` },
+          ]);
+        }
         return;
       }
 
@@ -236,7 +284,7 @@ export function Terminal({ onOpenWindow, onCloseSelf }: TerminalProps) {
         ]);
       }
     },
-    [onOpenWindow, currentDir]
+    [onOpenWindow, currentDir, theme, setTheme]
   );
 
   const handleSubmit = useCallback(
@@ -322,24 +370,59 @@ export function Terminal({ onOpenWindow, onCloseSelf }: TerminalProps) {
         e.preventDefault();
         const beforeCursor = currentLine.slice(0, cursor);
         const parts = beforeCursor.split(/\s+/).filter(Boolean);
-        const isCdArg = parts.length >= 1 && parts[0].toLowerCase() === "cd";
-        const prefix = isCdArg ? (parts[1] ?? "") : (parts[0] ?? "").toLowerCase();
-        const completions = getCompletions(prefix, isCdArg);
+        const cmd = parts[0]?.toLowerCase() ?? "";
+        const isCd = cmd === "cd";
+        const isCat = cmd === "cat";
+
+        let completions: string[];
+        if (isCat && parts.length > 1) {
+          const raw = (parts[parts.length - 1] ?? "").toLowerCase();
+          const lastSlash = raw.lastIndexOf("/");
+          const pathPart = lastSlash >= 0 ? raw.slice(0, lastSlash + 1) : "";
+          const segment = lastSlash >= 0 ? raw.slice(lastSlash + 1) : raw;
+          const resolvedDir = pathPart ? resolvePath(currentDir, pathPart.replace(/\/+$/, "")) : currentDir;
+          if (!isDirectory(resolvedDir)) {
+            completions = [];
+          } else {
+            const files = getFileCompletions(resolvedDir, segment);
+            completions = pathPart ? files.map((f) => pathPart + f) : files;
+          }
+        } else if (isCd && parts.length > 1) {
+          const raw = (parts[1] ?? "").toLowerCase();
+          const lastSlash = raw.includes("/") ? raw.lastIndexOf("/") : -1;
+          const pathPart = lastSlash >= 0 ? raw.slice(0, lastSlash + 1) : "";
+          const segment = lastSlash >= 0 ? raw.slice(lastSlash + 1) : raw;
+          const resolveBase = pathPart || (raw === ".." || raw === "." ? raw : "");
+          const parentDir = resolvePath(currentDir, resolveBase || ".");
+          if (!isDirectory(parentDir)) {
+            completions = [];
+          } else {
+            const dirs = getListing(parentDir).filter((e) => e.type === "dir").map((e) => e.name);
+            completions = dirs
+              .filter((d) => d.toLowerCase().startsWith(segment))
+              .map((d) => pathPart + d);
+            if (completions.length === 0 && (raw === ".." || raw === ".")) {
+              completions = dirs.map((d) => (raw === ".." ? "../" : "./") + d);
+            }
+          }
+        } else if (isCat) {
+          const filePrefix = parts.length > 1 ? parts[parts.length - 1] ?? "" : "";
+          completions = getFileCompletions(currentDir, filePrefix);
+        } else if (isCd) {
+          const prefix = (parts[1] ?? "").toLowerCase();
+          completions = getCompletions(prefix, true);
+        } else {
+          const prefix = cmd;
+          completions = getCompletions(prefix, false);
+        }
 
         if (completions.length === 0) return;
         if (completions.length === 1) {
           const completed = completions[0];
-          if (isCdArg) {
-            const newLine =
-              currentLine.slice(0, cursor).replace(/\S+$/, completed) + " ";
-            setCurrentLine(newLine);
-            cursorAfterUpdate.current = newLine.length;
-          } else {
-            const newLine =
-              currentLine.slice(0, cursor).replace(/\S+$/, completed) + " ";
-            setCurrentLine(newLine);
-            cursorAfterUpdate.current = newLine.length;
-          }
+          const newLine =
+            currentLine.slice(0, cursor).replace(/\S+$/, completed) + (isCd || isCat ? " " : " ");
+          setCurrentLine(newLine);
+          cursorAfterUpdate.current = newLine.length;
           return;
         }
         setOutput((o) => [
@@ -371,6 +454,7 @@ export function Terminal({ onOpenWindow, onCloseSelf }: TerminalProps) {
     },
     [
       currentLine,
+      currentDir,
       history,
       historyIndex,
       onCloseSelf,

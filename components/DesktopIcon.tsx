@@ -23,7 +23,8 @@ export function DesktopIcon({ config, shortcut, onOpen }: DesktopIconProps) {
       type="button"
       onClick={() => onOpen(config.id)}
       onKeyDown={(e) => e.key === "Enter" && onOpen(config.id)}
-      className="flex flex-col items-center gap-1.5 w-20 py-2 px-1.5 border border-transparent hover:border-desktop-border hover:bg-desktop-panel focus:outline-none focus-visible:border-desktop-accent transition-colors group text-center"
+      className="flex flex-col items-center gap-1.5 w-20 py-2 px-1.5 border border-transparent hover:border-desktop-border hover:bg-desktop-panel hover:ring-1 hover:ring-desktop-accent/25 focus:outline-none focus-visible:border-desktop-accent focus-visible:ring-1 focus-visible:ring-desktop-accent transition-colors group text-center"
+      whileHover={{ scale: 1.03 }}
       whileTap={{ scale: 0.98 }}
       aria-label={`Open ${config.label}`}
       title={title}
