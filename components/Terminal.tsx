@@ -38,9 +38,11 @@ Control Lead: Formula Trinity
 
 const COMMANDS: Record<string, { output: string; open?: WindowId }> = {
   help: {
-    output: `  help       show this help
-  about      about me
-  experience open experience/ (file manager)
+    output: `  Quick start (recruiters): about → experience → projects → resume → contact
+
+  help       show this help
+  about      about me / intro
+  experience open experience/ (roles & companies)
   projects   open projects/ (file manager)
   skills     skills
   resume     resume / CV
@@ -133,7 +135,7 @@ export function Terminal({ onOpenWindow, onCloseSelf }: TerminalProps) {
   const [currentDir, setCurrentDir] = useState("/home/joel");
   const [history, setHistory] = useState<string[]>([]);
   const [output, setOutput] = useState<{ type: "in" | "out"; text: string }[]>([
-    { type: "out", text: "Type 'help' for commands. cd experience|projects, ls, cat <file>\n" },
+    { type: "out", text: "Guest session. Type 'help' for commands. Quick start: about, experience, resume.\n" },
   ]);
   const [currentLine, setCurrentLine] = useState("");
   const [historyIndex, setHistoryIndex] = useState(-1);

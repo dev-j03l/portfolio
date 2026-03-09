@@ -1,8 +1,11 @@
+# Dependencies
 node_modules/
+
+# Next.js build output (do not commit or upload)
 .next/
+
+# Production build
 out/
-.env
-node_modules/
-.next/
-out/
+
+# Environment
 .env

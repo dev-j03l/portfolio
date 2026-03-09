@@ -113,7 +113,7 @@ export function Desktop() {
 
         {openIds.size === 0 && (
           <p className="mt-8 text-desktop-muted text-[11px] max-w-sm">
-            Click an icon to open, or open Terminal and type <kbd className="px-1 py-0.5 bg-desktop-panel border border-desktop-border text-desktop-text">help</kbd> for commands.
+            Exploring as a guest. Click an icon to open, or open Terminal and type <kbd className="px-1 py-0.5 bg-desktop-panel border border-desktop-border text-desktop-text">help</kbd> for a quick tour. Start with README, experience, or resume.
           </p>
         )}
 

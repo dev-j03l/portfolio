@@ -69,7 +69,15 @@ function BootScreen({ onDismiss }: { onDismiss: () => void }) {
           transition={{ delay: 1.25 }}
           className="text-desktop-accent"
         >
-          [    1.254891] Welcome, Guest User.
+          [    1.254891] Welcome, guest user.
+        </motion.p>
+        <motion.p
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 1.4 }}
+          className="text-desktop-muted text-[11px]"
+        >
+          [    1.301122] Guest session — exploring Joel&apos;s portfolio.
         </motion.p>
         {showPrompt && (
           <motion.p
