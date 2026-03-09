@@ -109,11 +109,13 @@ function MobilePortfolio() {
 
   return (
     <div className="min-h-screen bg-desktop-bg text-desktop-text font-mono">
-      <header className="sticky top-0 z-10 h-10 flex items-center bg-desktop-panel border-b border-desktop-border px-4">
-        <h1 className="text-desktop-accent font-semibold text-sm">
+      <header className="sticky top-0 z-10 flex flex-col justify-center py-3 px-4 bg-desktop-panel border-b border-desktop-border">
+        <h1 className="text-desktop-accent font-semibold text-base leading-tight tracking-tight">
           {profile.name}
         </h1>
-        <p className="text-desktop-muted text-[11px] mt-0.5">{profile.title}</p>
+        <p className="text-desktop-muted text-[11px] mt-1 leading-snug line-clamp-2">
+          {profile.title}
+        </p>
       </header>
 
       <main className="max-w-xl mx-auto px-4 py-6 space-y-8">
