@@ -69,7 +69,7 @@ function BootScreen({ onDismiss }: { onDismiss: () => void }) {
           transition={{ delay: 1.25 }}
           className="text-desktop-accent"
         >
-          [    1.254891] Welcome, {portfolioData.profile.name.split(" ")[0]}.
+          [    1.254891] Welcome, Guest User.
         </motion.p>
         {showPrompt && (
           <motion.p
