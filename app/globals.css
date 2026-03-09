@@ -1,0 +1,67 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --desktop-bg: #0a0a0c;
+  --surface: #0f0f12;
+  --panel: #121215;
+  --border: #252528;
+  --accent: #3d7fc6;
+  --cyan: #4a9b9b;
+  --text: #e2e2e5;
+  --muted: #6b6b73;
+  --font-mono: "JetBrains Mono", ui-monospace, monospace;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: var(--font-mono);
+  background: var(--desktop-bg);
+  color: var(--text);
+  overflow: hidden;
+  user-select: none;
+}
+
+body.portfolio-mobile {
+  overflow: auto;
+  user-select: text;
+}
+
+.wallpaper {
+  background-color: var(--desktop-bg);
+}
+
+.window-drag {
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+.terminal-cursor::after {
+  content: "";
+  display: inline-block;
+  width: 0.55em;
+  height: 1.05em;
+  background: var(--accent);
+  margin-left: 1px;
+  animation: blink 1s step-end infinite;
+  vertical-align: text-bottom;
+}
+
+@keyframes blink {
+  50% {
+    opacity: 0;
+  }
+}
+
+*:focus-visible {
+  outline: 1px solid var(--accent);
+  outline-offset: 1px;
+}
