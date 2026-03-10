@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useCallback, useState } from "react";
+import { useRef, useCallback, useEffect } from "react";
 import { motion } from "framer-motion";
 import type { WindowState } from "@/hooks/useWindowManager";
 
@@ -50,8 +50,9 @@ export function AppWindow({
   children,
 }: AppWindowProps) {
   const dragStart = useRef<{ x: number; y: number; left: number; top: number } | null>(null);
-  const [dragOffset, setDragOffset] = useState<{ dx: number; dy: number } | null>(null);
-  const rafId = useRef<number | null>(null);
+  const dragDelta = useRef({ dx: 0, dy: 0 });
+  const transformRef = useRef<HTMLDivElement>(null);
+  const pendingPosition = useRef<{ x: number; y: number } | null>(null);
 
   const handleTitlePointerDown = useCallback(
     (e: React.PointerEvent) => {
@@ -64,42 +65,47 @@ export function AppWindow({
         left: state.x,
         top: state.y,
       };
-      setDragOffset(null);
+      dragDelta.current = { dx: 0, dy: 0 };
+      if (transformRef.current) {
+        transformRef.current.style.transform = "translate(0px, 0px)";
+      }
     },
     [state.isMaximized, state.x, state.y]
   );
 
   const handleTitlePointerMove = useCallback(
     (e: React.PointerEvent) => {
-      if (!dragStart.current) return;
+      if (!dragStart.current || !transformRef.current) return;
       const dx = e.clientX - dragStart.current.x;
       const dy = e.clientY - dragStart.current.y;
-      if (rafId.current !== null) cancelAnimationFrame(rafId.current);
-      rafId.current = requestAnimationFrame(() => {
-        rafId.current = null;
-        setDragOffset({ dx, dy });
-      });
+      dragDelta.current = { dx, dy };
+      transformRef.current.style.transform = `translate(${dx}px, ${dy}px)`;
     },
     []
   );
 
   const handleTitlePointerUp = useCallback(
     (e: React.PointerEvent) => {
-      if (rafId.current !== null) {
-        cancelAnimationFrame(rafId.current);
-        rafId.current = null;
-      }
       e.currentTarget.releasePointerCapture(e.pointerId);
       if (dragStart.current) {
         const dx = e.clientX - dragStart.current.x;
         const dy = e.clientY - dragStart.current.y;
-        onPositionChange(dragStart.current.left + dx, dragStart.current.top + dy);
+        const newX = dragStart.current.left + dx;
+        const newY = dragStart.current.top + dy;
+        pendingPosition.current = { x: newX, y: newY };
+        onPositionChange(newX, newY);
       }
       dragStart.current = null;
-      setDragOffset(null);
     },
     [onPositionChange]
   );
+
+  useEffect(() => {
+    const pending = pendingPosition.current;
+    if (!pending || state.x !== pending.x || state.y !== pending.y) return;
+    if (transformRef.current) transformRef.current.style.transform = "none";
+    pendingPosition.current = null;
+  }, [state.x, state.y]);
 
   const handleTitleDoubleClick = useCallback(
     (e: React.MouseEvent) => {
@@ -112,8 +118,6 @@ export function AppWindow({
   if (state.isMinimized) return null;
 
   const panelHeight = 24;
-  const dx = dragOffset?.dx ?? 0;
-  const dy = dragOffset?.dy ?? 0;
   const style: React.CSSProperties = state.isMaximized
     ? {
         position: "fixed",
@@ -127,8 +131,8 @@ export function AppWindow({
       }
     : {
         position: "fixed",
-        left: state.x + dx,
-        top: state.y + dy,
+        left: state.x,
+        top: state.y,
         width: state.width,
         height: state.height,
         zIndex: state.zIndex,
@@ -136,45 +140,58 @@ export function AppWindow({
 
   return (
     <motion.div
-      layout
       initial={{ opacity: 0, scale: 0.98 }}
       animate={{ opacity: 1, scale: 1 }}
       exit={{ opacity: 0, scale: 0.98 }}
       transition={{ duration: 0.2, ease: [0.25, 0.1, 0.25, 1] }}
       style={style}
-      className={`flex flex-col bg-desktop-surface overflow-hidden rounded-none border transition-all duration-200 ${
-        isFocused
-          ? "border-desktop-accent ring-1 ring-desktop-accent/30 window-focused"
-          : "border-desktop-border"
-      }`}
+      className="flex flex-col overflow-visible"
       onPointerDown={onFocus}
       onClick={onFocus}
     >
       <div
-        className="window-drag title-bar-gradient flex-shrink-0 h-6 flex items-center justify-between px-1.5 border-b border-desktop-border cursor-grab active:cursor-grabbing touch-none select-none"
-        onPointerDown={handleTitlePointerDown}
-        onPointerMove={handleTitlePointerMove}
-        onPointerUp={handleTitlePointerUp}
-        onPointerLeave={handleTitlePointerUp}
-        onPointerCancel={handleTitlePointerUp}
-        onDoubleClick={handleTitleDoubleClick}
+        ref={transformRef}
+        className={`w-full h-full flex flex-col rounded-none border bg-desktop-surface overflow-hidden will-change-transform transition-colors duration-150 ${
+          isFocused
+            ? "border-desktop-accent ring-1 ring-desktop-accent/30 window-focused"
+            : "border-desktop-border"
+        }`}
+        style={{
+          touchAction: "none",
+          transform:
+            pendingPosition.current &&
+            state.x === pendingPosition.current.x &&
+            state.y === pendingPosition.current.y
+              ? "none"
+              : undefined,
+        }}
       >
-        <div className="flex items-center gap-0 min-w-0">
-          <TitleBarButton onClick={onClose} label="Close">
-            ×
-          </TitleBarButton>
-          <TitleBarButton onClick={onMinimize} label="Minimize">
-            −
-          </TitleBarButton>
-          <TitleBarButton onClick={onMaximize} label="Maximize">
-            □
-          </TitleBarButton>
-          <span className="text-desktop-muted text-[10px] ml-1.5 truncate max-w-[200px]">
-            {state.title}
-          </span>
+        <div
+          className="window-drag title-bar-gradient flex-shrink-0 h-6 flex items-center justify-between px-1.5 border-b border-desktop-border cursor-grab active:cursor-grabbing touch-none select-none"
+          onPointerDown={handleTitlePointerDown}
+          onPointerMove={handleTitlePointerMove}
+          onPointerUp={handleTitlePointerUp}
+          onPointerLeave={handleTitlePointerUp}
+          onPointerCancel={handleTitlePointerUp}
+          onDoubleClick={handleTitleDoubleClick}
+        >
+          <div className="flex items-center gap-0 min-w-0">
+            <TitleBarButton onClick={onClose} label="Close">
+              ×
+            </TitleBarButton>
+            <TitleBarButton onClick={onMinimize} label="Minimize">
+              −
+            </TitleBarButton>
+            <TitleBarButton onClick={onMaximize} label="Maximize">
+              □
+            </TitleBarButton>
+            <span className="text-desktop-muted text-[10px] ml-1.5 truncate max-w-[200px]">
+              {state.title}
+            </span>
+          </div>
         </div>
+        <div className="flex-1 overflow-auto min-h-0 bg-desktop-surface">{children}</div>
       </div>
-      <div className="flex-1 overflow-auto min-h-0 bg-desktop-surface">{children}</div>
     </motion.div>
   );
 }
