@@ -31,19 +31,19 @@ const defaultWindows: Record<WindowId, Omit<WindowState, "zIndex">> = {
     isMinimized: false,
     isMaximized: false,
     x: 120,
-    y: 80,
-    width: 520,
-    height: 400,
+    y: 70,
+    width: 560,
+    height: 520,
   },
   experience: {
     id: "experience",
     title: "experience/",
     isMinimized: false,
     isMaximized: false,
-    x: 180,
-    y: 120,
-    width: 560,
-    height: 440,
+    x: 170,
+    y: 90,
+    width: 640,
+    height: 560,
   },
   projects: {
     id: "projects",
@@ -51,9 +51,9 @@ const defaultWindows: Record<WindowId, Omit<WindowState, "zIndex">> = {
     isMinimized: false,
     isMaximized: false,
     x: 80,
-    y: 100,
-    width: 600,
-    height: 460,
+    y: 90,
+    width: 700,
+    height: 540,
   },
   skills: {
     id: "skills",
@@ -61,9 +61,9 @@ const defaultWindows: Record<WindowId, Omit<WindowState, "zIndex">> = {
     isMinimized: false,
     isMaximized: false,
     x: 200,
-    y: 60,
-    width: 480,
-    height: 420,
+    y: 70,
+    width: 520,
+    height: 470,
   },
   resume: {
     id: "resume",
@@ -71,9 +71,10 @@ const defaultWindows: Record<WindowId, Omit<WindowState, "zIndex">> = {
     isMinimized: false,
     isMaximized: false,
     x: 200,
-    y: 80,
-    width: 280,
-    height: 280,
+    y: 60,
+    // Roughly A4 aspect so the embedded PDF fills the frame.
+    width: 620,
+    height: 760,
   },
   contact: {
     id: "contact",
@@ -81,9 +82,9 @@ const defaultWindows: Record<WindowId, Omit<WindowState, "zIndex">> = {
     isMinimized: false,
     isMaximized: false,
     x: 220,
-    y: 140,
-    width: 440,
-    height: 320,
+    y: 130,
+    width: 480,
+    height: 340,
   },
   terminal: {
     id: "terminal",
@@ -107,6 +108,29 @@ const defaultWindows: Record<WindowId, Omit<WindowState, "zIndex">> = {
   },
 };
 
+const TOP_BAR_H = 24;
+const TASKBAR_H = 28;
+const MARGIN = 8;
+
+/**
+ * Shrinks and nudges a window so it fits the current viewport. Geometry that
+ * already fits is returned untouched, so a position the user dragged to is kept.
+ */
+function fitToViewport(w: WindowState): WindowState {
+  if (typeof window === "undefined") return w;
+  const maxWidth = window.innerWidth - MARGIN * 2;
+  const maxHeight = window.innerHeight - TOP_BAR_H - TASKBAR_H - MARGIN * 2;
+  const width = Math.min(w.width, Math.max(240, maxWidth));
+  const height = Math.min(w.height, Math.max(200, maxHeight));
+  const x = Math.max(MARGIN, Math.min(w.x, window.innerWidth - width - MARGIN));
+  const y = Math.max(
+    TOP_BAR_H + MARGIN,
+    Math.min(w.y, window.innerHeight - TASKBAR_H - height - MARGIN)
+  );
+  if (width === w.width && height === w.height && x === w.x && y === w.y) return w;
+  return { ...w, width, height, x, y };
+}
+
 export function useWindowManager() {
   const [windows, setWindows] = useState<Record<WindowId, WindowState>>(() => {
     const initial: Record<WindowId, WindowState> = {} as Record<
@@ -122,7 +146,6 @@ export function useWindowManager() {
 
   const [openIds, setOpenIds] = useState<Set<WindowId>>(new Set());
   const [focusedId, setFocusedId] = useState<WindowId | null>(null);
-  const [nextZ, setNextZ] = useState(100);
 
   const bringToFront = useCallback((id: WindowId) => {
     setWindows((prev) => {
@@ -141,11 +164,11 @@ export function useWindowManager() {
       const maxZ = Math.max(...Object.values(prev).map((w) => w.zIndex), 0);
       return {
         ...prev,
-        [id]: {
+        [id]: fitToViewport({
           ...prev[id],
           isMinimized: false,
           zIndex: maxZ + 1,
-        },
+        }),
       };
     });
     setFocusedId(id);

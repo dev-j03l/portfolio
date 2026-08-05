@@ -4,30 +4,42 @@
 
 :root,
 [data-theme="dark"] {
-  --desktop-bg: #0a0a0c;
-  --surface: #0f0f12;
-  --panel: #121215;
-  --border: #252528;
-  --border-focus: #353538;
-  --accent: #3d7fc6;
-  --cyan: #4a9b9b;
-  --text: #e2e2e5;
-  --muted: #6b6b73;
-  --dim: #4a4a52;
+  --desktop-bg: #0b0c0e;
+  --surface: #101215;
+  --panel: #15181c;
+  --elevated: #1a1e23;
+  --border: #23272d;
+  --border-focus: #343b44;
+  --accent: #1f9ed4;
+  --accent-dim: rgba(31, 158, 212, 0.14);
+  --cyan: #2ec4b6;
+  --green: #62b47a;
+  --amber: #d9a05b;
+  --text: #dfe3e8;
+  --muted: #7c848f;
+  --dim: #545b65;
+  --shadow-window: 0 18px 48px -12px rgba(0, 0, 0, 0.7),
+    0 4px 12px -4px rgba(0, 0, 0, 0.5);
   --font-mono: "JetBrains Mono", ui-monospace, monospace;
 }
 
 [data-theme="light"] {
-  --desktop-bg: #e8e9ec;
-  --surface: #f0f1f4;
-  --panel: #d8d9dd;
-  --border: #b8bac2;
-  --border-focus: #8a8d96;
-  --accent: #2563a8;
+  --desktop-bg: #eceef2;
+  --surface: #f8f9fb;
+  --panel: #e1e4ea;
+  --elevated: #ffffff;
+  --border: #c7cbd4;
+  --border-focus: #9198a6;
+  --accent: #0f6f9e;
+  --accent-dim: rgba(15, 111, 158, 0.12);
   --cyan: #0d7a7a;
-  --text: #1a1b1e;
-  --muted: #5c5e66;
-  --dim: #7a7c85;
+  --green: #2f7d5f;
+  --amber: #a1691f;
+  --text: #15171b;
+  --muted: #565c66;
+  --dim: #7a8089;
+  --shadow-window: 0 18px 44px -14px rgba(20, 26, 38, 0.28),
+    0 3px 10px -3px rgba(20, 26, 38, 0.14);
 }
 
 * {
@@ -36,6 +48,7 @@
 
 html {
   scroll-behavior: smooth;
+  transition: background-color 0.25s ease, color 0.2s ease;
 }
 
 body {
@@ -44,6 +57,7 @@ body {
   color: var(--text);
   overflow: hidden;
   user-select: none;
+  -webkit-font-smoothing: antialiased;
 }
 
 body.portfolio-mobile {
@@ -51,7 +65,37 @@ body.portfolio-mobile {
   user-select: text;
 }
 
-/* Cool desktop background: gradient + grid + subtle glow */
+/* ——— Scrollbars: thin, themed, unobtrusive ——— */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--border-focus) transparent;
+}
+
+::-webkit-scrollbar {
+  width: 9px;
+  height: 9px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--border-focus);
+  border: 2px solid transparent;
+  background-clip: content-box;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--accent);
+  background-clip: content-box;
+}
+
+::-webkit-scrollbar-corner {
+  background: transparent;
+}
+
+/* ——— Wallpaper: gradient wash + grid + ambient glow ——— */
 .wallpaper {
   background-color: var(--desktop-bg);
   position: relative;
@@ -63,90 +107,134 @@ body.portfolio-mobile {
   position: absolute;
   inset: 0;
   background:
-    radial-gradient(ellipse 120% 80% at 70% 20%, rgba(61, 127, 198, 0.06) 0%, transparent 50%),
-    radial-gradient(ellipse 100% 100% at 30% 80%, rgba(74, 155, 155, 0.04) 0%, transparent 45%),
-    radial-gradient(ellipse 80% 60% at 50% 50%, rgba(10, 10, 12, 0.95) 0%, transparent 70%);
+    radial-gradient(ellipse 120% 80% at 72% 14%, rgba(31, 158, 212, 0.09) 0%, transparent 52%),
+    radial-gradient(ellipse 100% 100% at 24% 86%, rgba(46, 196, 182, 0.055) 0%, transparent 48%),
+    radial-gradient(ellipse 90% 70% at 50% 50%, rgba(11, 12, 14, 0.9) 0%, transparent 72%);
   pointer-events: none;
   z-index: 0;
 }
 
 [data-theme="light"] .wallpaper::before {
   background:
-    radial-gradient(ellipse 120% 80% at 70% 20%, rgba(37, 99, 168, 0.08) 0%, transparent 50%),
-    radial-gradient(ellipse 100% 100% at 30% 80%, rgba(13, 122, 122, 0.06) 0%, transparent 45%),
-    radial-gradient(ellipse 80% 60% at 50% 50%, rgba(232, 233, 236, 0.9) 0%, transparent 70%);
+    radial-gradient(ellipse 120% 80% at 72% 14%, rgba(15, 111, 158, 0.1) 0%, transparent 52%),
+    radial-gradient(ellipse 100% 100% at 24% 86%, rgba(13, 122, 122, 0.07) 0%, transparent 48%),
+    radial-gradient(ellipse 90% 70% at 50% 50%, rgba(236, 238, 242, 0.85) 0%, transparent 72%);
 }
 
+/* Fine grid + a coarser 4x grid on top, like a tiled WM's guides */
 .wallpaper::after {
   content: "";
   position: absolute;
   inset: 0;
   background-image:
-    linear-gradient(rgba(61, 127, 198, 0.03) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(61, 127, 198, 0.03) 1px, transparent 1px);
-  background-size: 24px 24px;
+    linear-gradient(rgba(31, 158, 212, 0.055) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(31, 158, 212, 0.055) 1px, transparent 1px),
+    linear-gradient(rgba(31, 158, 212, 0.025) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(31, 158, 212, 0.025) 1px, transparent 1px);
+  background-size: 96px 96px, 96px 96px, 24px 24px, 24px 24px;
+  mask-image: radial-gradient(ellipse 90% 80% at 50% 40%, #000 20%, transparent 85%);
+  -webkit-mask-image: radial-gradient(ellipse 90% 80% at 50% 40%, #000 20%, transparent 85%);
   pointer-events: none;
   z-index: 0;
 }
 
 [data-theme="light"] .wallpaper::after {
   background-image:
-    linear-gradient(rgba(37, 99, 168, 0.08) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(37, 99, 168, 0.08) 1px, transparent 1px);
+    linear-gradient(rgba(15, 111, 158, 0.1) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(15, 111, 158, 0.1) 1px, transparent 1px),
+    linear-gradient(rgba(15, 111, 158, 0.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(15, 111, 158, 0.05) 1px, transparent 1px);
 }
 
-/* Slow ambient glow animation */
 @keyframes wallpaper-glow {
-  0%, 100% { opacity: 0.6; transform: translate(0, 0) scale(1); }
-  33% { opacity: 0.8; transform: translate(2%, -1%) scale(1.02); }
-  66% { opacity: 0.5; transform: translate(-1%, 2%) scale(0.98); }
+  0%, 100% { opacity: 0.6; transform: translate(-50%, -50%) scale(1); }
+  33% { opacity: 0.85; transform: translate(-49%, -51%) scale(1.04); }
+  66% { opacity: 0.5; transform: translate(-51%, -49%) scale(0.97); }
 }
 
 .wallpaper-glow {
   position: absolute;
-  width: 60vmax;
-  height: 60vmax;
+  width: 62vmax;
+  height: 62vmax;
   left: 50%;
   top: 50%;
   transform: translate(-50%, -50%);
   background: radial-gradient(
     circle,
-    rgba(61, 127, 198, 0.08) 0%,
-    rgba(74, 155, 155, 0.04) 25%,
-    transparent 60%
+    rgba(31, 158, 212, 0.1) 0%,
+    rgba(46, 196, 182, 0.05) 28%,
+    transparent 62%
   );
   pointer-events: none;
   z-index: 0;
-  animation: wallpaper-glow 18s ease-in-out infinite;
+  animation: wallpaper-glow 22s ease-in-out infinite;
 }
 
 [data-theme="light"] .wallpaper-glow {
   background: radial-gradient(
     circle,
-    rgba(37, 99, 168, 0.06) 0%,
-    rgba(13, 122, 122, 0.04) 25%,
-    transparent 60%
+    rgba(15, 111, 158, 0.07) 0%,
+    rgba(13, 122, 122, 0.045) 28%,
+    transparent 62%
   );
 }
 
-@media (prefers-reduced-motion: reduce) {
-  .wallpaper-glow {
-    animation: none;
-    opacity: 0.7;
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .terminal-cursor::after {
-    animation: none;
-  }
-}
-
+/* ——— Window chrome ——— */
 .window-drag {
   -webkit-user-select: none;
   user-select: none;
 }
 
+.window-shadow {
+  box-shadow: var(--shadow-window);
+}
+
+.window-focused {
+  box-shadow: var(--shadow-window), 0 0 0 1px var(--accent-dim),
+    0 0 24px -6px var(--accent-dim);
+}
+
+/* Title bar: subtle top highlight, like a real GTK/Qt header */
+.title-bar-gradient {
+  background: linear-gradient(180deg, var(--elevated) 0%, var(--panel) 100%);
+  position: relative;
+}
+
+.title-bar-gradient::after {
+  content: "";
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    var(--border-focus) 20%,
+    var(--border-focus) 80%,
+    transparent
+  );
+  opacity: 0.5;
+  pointer-events: none;
+}
+
+/* Accent rail down the left edge of a focused window */
+.window-rail {
+  position: relative;
+}
+
+.window-rail::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  background: linear-gradient(180deg, var(--accent), transparent 70%);
+  opacity: 0.7;
+  pointer-events: none;
+  z-index: 2;
+}
+
+/* ——— Terminal ——— */
 .terminal-cursor::after {
   content: "";
   display: inline-block;
@@ -159,51 +247,63 @@ body.portfolio-mobile {
 }
 
 @keyframes blink {
-  50% {
-    opacity: 0;
-  }
+  50% { opacity: 0; }
 }
 
+/* ——— Chips ——— */
+.chip {
+  display: inline-flex;
+  align-items: center;
+  padding: 1px 7px;
+  font-size: 10px;
+  line-height: 1.6;
+  color: var(--accent);
+  background: var(--accent-dim);
+  border: 1px solid transparent;
+  white-space: nowrap;
+  transition: border-color 0.15s ease, color 0.15s ease;
+}
+
+.chip:hover {
+  border-color: var(--accent);
+}
+
+/* ——— Timeline ——— */
+/* Ring colours are background-independent so the same dot works on the
+   desktop windows (--surface) and the mobile page (--desktop-bg). */
+.timeline-dot {
+  box-shadow: 0 0 0 2px var(--border);
+}
+
+.timeline-dot-current {
+  box-shadow: 0 0 0 2px var(--accent-dim), 0 0 10px 1px var(--accent-dim);
+}
+
+@keyframes live-pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.45; transform: scale(0.82); }
+}
+
+.live-dot {
+  animation: live-pulse 2.4s ease-in-out infinite;
+}
+
+/* ——— Focus & selection ——— */
 *:focus-visible {
   outline: 2px solid var(--accent);
   outline-offset: 2px;
 }
 
-/* Smooth theme transition */
-html {
-  transition: background-color 0.25s ease, color 0.2s ease;
-}
-
-/* Selection styling */
 ::selection {
-  background: rgba(61, 127, 198, 0.35);
+  background: rgba(31, 158, 212, 0.32);
   color: inherit;
 }
 
 [data-theme="light"] ::selection {
-  background: rgba(37, 99, 168, 0.25);
+  background: rgba(15, 111, 158, 0.22);
 }
 
-/* Window shadow when focused (depth) */
-.window-focused {
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.35), 0 0 0 1px var(--border);
-}
-
-[data-theme="light"] .window-focused {
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12), 0 0 0 1px var(--border);
-}
-
-/* Title bar subtle gradient */
-.title-bar-gradient {
-  background: linear-gradient(
-    180deg,
-    var(--panel) 0%,
-    var(--panel) 50%,
-    var(--surface) 100%
-  );
-}
-
-/* Taskbar item hover lift */
+/* ——— Taskbar ——— */
 .taskbar-item {
   transition: transform 0.15s ease, background-color 0.15s ease;
 }
@@ -228,17 +328,7 @@ html {
   50% { opacity: 0.5; }
 }
 
-@media (prefers-reduced-motion: reduce) {
-  .taskbar-item:hover {
-    transform: none;
-  }
-  .taskbar-item-focus-pulse::before {
-    animation: none;
-    opacity: 0.3;
-  }
-}
-
-/* Scanline (boot screen) */
+/* ——— Boot screen ——— */
 @keyframes scanline {
   0% { transform: translateY(-100%); }
   100% { transform: translateY(100vh); }
@@ -246,4 +336,24 @@ html {
 
 .boot-scanline {
   animation: scanline 3s linear infinite;
+}
+
+/* ——— Reduced motion ——— */
+@media (prefers-reduced-motion: reduce) {
+  .wallpaper-glow {
+    animation: none;
+    opacity: 0.7;
+  }
+  .terminal-cursor::after,
+  .live-dot,
+  .boot-scanline,
+  .taskbar-item-focus-pulse::before {
+    animation: none;
+  }
+  .taskbar-item:hover {
+    transform: none;
+  }
+  html {
+    scroll-behavior: auto;
+  }
 }

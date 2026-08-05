@@ -31,7 +31,7 @@ function TitleBarButton({
         e.stopPropagation();
         onClick(e);
       }}
-      className="w-4 h-4 flex items-center justify-center text-[9px] text-desktop-muted hover:text-desktop-text hover:bg-desktop-border transition-colors shrink-0"
+      className="w-5 h-5 flex items-center justify-center text-[10px] leading-none text-desktop-dim hover:text-desktop-text hover:bg-desktop-border/70 transition-colors shrink-0"
       aria-label={label}
     >
       {children}
@@ -153,8 +153,8 @@ export function AppWindow({
         ref={transformRef}
         className={`w-full h-full flex flex-col rounded-none border bg-desktop-surface overflow-hidden will-change-transform transition-colors duration-150 ${
           isFocused
-            ? "border-desktop-accent ring-1 ring-desktop-accent/30 window-focused"
-            : "border-desktop-border"
+            ? "border-desktop-accent/70 window-focused window-rail"
+            : "border-desktop-border window-shadow"
         }`}
         style={{
           touchAction: "none",
@@ -167,7 +167,7 @@ export function AppWindow({
         }}
       >
         <div
-          className="window-drag title-bar-gradient flex-shrink-0 h-6 flex items-center justify-between px-1.5 border-b border-desktop-border cursor-grab active:cursor-grabbing touch-none select-none"
+          className="window-drag title-bar-gradient flex-shrink-0 h-7 flex items-center justify-between px-1.5 border-b border-desktop-border cursor-grab active:cursor-grabbing touch-none select-none"
           onPointerDown={handleTitlePointerDown}
           onPointerMove={handleTitlePointerMove}
           onPointerUp={handleTitlePointerUp}
@@ -185,10 +185,23 @@ export function AppWindow({
             <TitleBarButton onClick={onMaximize} label="Maximize">
               □
             </TitleBarButton>
-            <span className="text-desktop-muted text-[10px] ml-1.5 truncate max-w-[200px]">
+            <span
+              className={`text-[10.5px] ml-2 truncate max-w-[240px] transition-colors ${
+                isFocused ? "text-desktop-text" : "text-desktop-muted"
+              }`}
+            >
               {state.title}
             </span>
           </div>
+          {/* Tiling-WM style layout indicator on the right of the title bar */}
+          <span
+            aria-hidden
+            className={`shrink-0 mr-0.5 text-[9px] tracking-wider transition-colors ${
+              isFocused ? "text-desktop-accent" : "text-desktop-dim"
+            }`}
+          >
+            {state.isMaximized ? "[M]" : "[◫]"}
+          </span>
         </div>
         <div className="flex-1 overflow-auto min-h-0 bg-desktop-surface">{children}</div>
       </div>

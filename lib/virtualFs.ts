@@ -50,6 +50,7 @@ function experienceToText(entry: ExperienceItem): string {
     "",
     ...entry.bullets.map((b) => `  • ${b}`),
     "",
+    ...(entry.tech?.length ? [`  Tech: ${entry.tech.join(", ")}`, ""] : []),
   ];
   return lines.join("\n");
 }
@@ -57,7 +58,7 @@ function experienceToText(entry: ExperienceItem): string {
 function projectToText(entry: ProjectItem): string {
   const lines = [
     "╭─────────────────────────────────────────╮",
-    `│  ${entry.name}`,
+    `│  ${entry.name}${entry.year ? ` (${entry.year})` : ""}`,
     `│  ${entry.tech}`,
     "╰─────────────────────────────────────────╯",
     "",

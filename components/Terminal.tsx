@@ -10,30 +10,21 @@ function promptForDir(dir: string): string {
   return `joel@archfolio:${short}$ `;
 }
 
+// NOTE: rendered with trimEnd(), never trim() — trim() would eat the leading
+// spaces on the first line and knock the logo's apex out of alignment.
 const NEOFETCH_OUT = `
-       joel@archfolio
-       .\\\\      .\\\\
-      /  \\\\    /  \\\\
-     /    \\\\  /    \\\\
-    /  __  \\\\/  __  \\\\
-   /  /  \\\\__/  /  \\\\
-  /  /         /  \\\\
- /  /         /  \\\\
-/__/         /__/
-\\\\_____     _____/
-      \\\\   /
-       \\\\ /
-        \\\\
-joel@archfolio
---------------
-OS: Arch Linux (archfolio)
-Host: personal-website
-Kernel: React 18 / Next.js 15
-Shell: zsh 5.9
-Terminal: archfolio
-Location: Dublin, Ireland
-Role: CS @ Trinity | SWE Intern @ HubSpot
-AI Captain: Formula Trinity
+        /\\             joel@archfolio
+       /  \\            ─────────────────────────────
+      /\\   \\           OS        Arch Linux (archfolio)
+     /      \\          Host      personal-website
+    /   ,,   \\         Kernel    Next.js 15 · React 18
+   /   |  |   \\        Shell     zsh 5.9
+  /_-''    ''-_\\       Uptime    since Sept 2023
+                       Terminal  archfolio
+                       Role      SWE Intern @ HubSpot
+                       Team      AI Captain @ Formula Trinity
+                       Studies   CS (MCS) @ Trinity College Dublin
+                       Location  Dublin, Ireland
 `;
 
 const COMMANDS: Record<string, { output: string; open?: WindowId }> = {
@@ -79,7 +70,7 @@ Shortcuts: Alt+1–8 open apps, Super+1–8 focus, Esc close window`,
   browser: { output: "Opening Links...", open: "browser" },
 
   clear: { output: "" },
-  whoami: { output: NEOFETCH_OUT.trim() },
+  whoami: { output: NEOFETCH_OUT.trimEnd() },
 };
 
 const COMMAND_NAMES = [
@@ -288,7 +279,7 @@ export function Terminal({ onOpenWindow, onCloseSelf }: TerminalProps) {
       }
 
       if (cmd === "neofetch") {
-        setOutput((o) => [...o, { type: "out", text: NEOFETCH_OUT.trim() + "\n" }]);
+        setOutput((o) => [...o, { type: "out", text: NEOFETCH_OUT.trimEnd() + "\n" }]);
         return;
       }
 

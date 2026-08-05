@@ -3,6 +3,9 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Desktop } from "@/components/Desktop";
+import { ExperienceTimeline } from "@/components/ExperienceWindow";
+import { ProjectGrid } from "@/components/ProjectsWindow";
+import { TechChips } from "@/components/TechChips";
 import { portfolioData } from "@/data/portfolioData";
 
 function BootScreen({ onDismiss }: { onDismiss: () => void }) {
@@ -126,11 +129,38 @@ function BootScreen({ onDismiss }: { onDismiss: () => void }) {
   );
 }
 
+function MobileSection({
+  id,
+  title,
+  children,
+}: {
+  id: string;
+  title: string;
+  children: React.ReactNode;
+}) {
+  return (
+    <section id={id} className="scroll-mt-24">
+      <h2 className="flex items-center gap-2 text-desktop-accent text-[10px] font-semibold uppercase tracking-[0.15em] mb-3">
+        {title}
+        <span aria-hidden className="flex-1 h-px bg-desktop-border" />
+      </h2>
+      {children}
+    </section>
+  );
+}
+
+const MOBILE_NAV = [
+  { id: "about", label: "about" },
+  { id: "experience", label: "work" },
+  { id: "projects", label: "projects" },
+  { id: "skills", label: "skills" },
+  { id: "contact", label: "contact" },
+];
+
 function MobilePortfolio() {
   const {
     profile,
     about,
-    experience,
     projects,
     skills,
     education,
@@ -141,157 +171,179 @@ function MobilePortfolio() {
 
   return (
     <div className="min-h-screen bg-desktop-bg text-desktop-text font-mono">
-      <header className="sticky top-0 z-10 flex flex-col justify-center py-3 px-4 bg-desktop-panel border-b border-desktop-border">
-        <h1 className="text-desktop-accent font-semibold text-base leading-tight tracking-tight">
-          {profile.name}
-        </h1>
-        <p className="text-desktop-muted text-[11px] mt-1 leading-snug line-clamp-2">
-          {profile.title}
-        </p>
+      {/* Header + horizontally scrollable section nav */}
+      <header className="sticky top-0 z-20 bg-desktop-panel/95 backdrop-blur-sm border-b border-desktop-border">
+        <div className="px-4 pt-3 pb-2">
+          <div className="flex items-center gap-2">
+            <span
+              aria-hidden
+              className="shrink-0 w-8 h-8 border border-desktop-accent/40 bg-desktop-accent/10 flex items-center justify-center text-desktop-accent text-[12px] font-semibold"
+            >
+              JJ
+            </span>
+            <div className="min-w-0">
+              <h1 className="text-desktop-text font-semibold text-[15px] leading-tight tracking-tight truncate">
+                {profile.name}
+              </h1>
+              <p className="text-desktop-dim text-[10px] mt-0.5 truncate">
+                {profile.location}
+              </p>
+            </div>
+          </div>
+        </div>
+        <nav
+          aria-label="Sections"
+          className="flex gap-1 px-3 pb-2 overflow-x-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+        >
+          {MOBILE_NAV.map((item) => (
+            <a
+              key={item.id}
+              href={`#${item.id}`}
+              className="shrink-0 px-2.5 py-1 text-[11px] text-desktop-muted border border-desktop-border bg-desktop-surface active:border-desktop-accent active:text-desktop-accent transition-colors"
+            >
+              {item.label}
+            </a>
+          ))}
+        </nav>
       </header>
 
-      <main className="max-w-xl mx-auto px-4 py-6 space-y-8">
+      <main className="max-w-xl mx-auto px-4 py-6 space-y-9">
+        {/* Hero */}
         <section>
-          <h2 className="text-desktop-accent text-[11px] font-semibold uppercase tracking-wide mb-2">
-            About
-          </h2>
-          <pre className="whitespace-pre-wrap text-[13px] text-desktop-text/90 leading-relaxed">
-            {about}
-          </pre>
-        </section>
-
-        <section>
-          <h2 className="text-desktop-accent text-[11px] font-semibold uppercase tracking-wide mb-3">
-            Experience
-          </h2>
-          <div className="space-y-4">
-            {experience.map((job, i) => (
-              <div
-                key={i}
-                className="border-l border-desktop-accent/60 pl-3 py-1"
-              >
-                <p className="font-medium text-desktop-text text-[13px]">
-                  {job.role}
-                </p>
-                <p className="text-desktop-muted text-[11px]">
-                  {job.company} · {job.period}
-                </p>
-                <ul className="list-disc list-inside text-[13px] mt-1 space-y-0.5 text-desktop-text/90">
-                  {job.bullets.map((b, j) => (
-                    <li key={j}>{b}</li>
-                  ))}
-                </ul>
-              </div>
-            ))}
-          </div>
-        </section>
-
-        <section>
-          <h2 className="text-desktop-accent text-[11px] font-semibold uppercase tracking-wide mb-3">
-            Projects
-          </h2>
-          <div className="space-y-3">
-            {projects.map((proj, i) => (
-              <div
-                key={i}
-                className="p-3 bg-desktop-surface border border-desktop-border"
-              >
-                <p className="font-medium text-desktop-accent text-[13px]">
-                  {proj.name}
-                </p>
-                <p className="text-desktop-muted text-[11px]">{proj.tech}</p>
-                <p className="text-[13px] mt-1 text-desktop-text/90">
-                  {proj.description}
-                </p>
-                {proj.link && (
-                  <a
-                    href={proj.link}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-desktop-accent text-[12px] mt-2 inline-block hover:underline active:underline"
-                  >
-                    View project →
-                  </a>
-                )}
-              </div>
-            ))}
-          </div>
-        </section>
-
-        <section>
-          <h2 className="text-desktop-accent text-[11px] font-semibold uppercase tracking-wide mb-2">
-            Skills
-          </h2>
-          <div className="flex flex-wrap gap-1.5">
-            {skills.flatMap((c) => c.items).map((s, i) => (
-              <span
-                key={i}
-                className="px-2 py-0.5 bg-desktop-surface border border-desktop-border text-[11px] text-desktop-text"
-              >
-                {s}
-              </span>
-            ))}
-          </div>
-        </section>
-
-        <section>
-          <h2 className="text-desktop-accent text-[11px] font-semibold uppercase tracking-wide mb-1">
-            Education
-          </h2>
-          <p className="text-desktop-text text-[13px]">
-            {education.institution}
+          <p className="text-desktop-accent text-[13px] leading-relaxed">
+            {profile.title}
           </p>
-          <p className="text-desktop-muted text-[11px]">
-            {education.degree} · {education.period}
-          </p>
-          {"coursework" in education && education.coursework && (
-            <p className="text-desktop-text/90 text-[12px] mt-1.5">
-              {education.coursework}
-            </p>
-          )}
-        </section>
-
-        <section>
-          <h2 className="text-desktop-accent text-[11px] font-semibold uppercase tracking-wide mb-2">
-            Contact
-          </h2>
-          <a
-            href={`mailto:${contact.email}`}
-            className="text-desktop-accent hover:underline block text-[13px]"
-          >
-            {contact.email}
-          </a>
-          {contact.phone && (
+          <div className="flex flex-wrap gap-2 mt-4">
             <a
-              href={`tel:${contact.phone.replace(/\s/g, "")}`}
-              className="text-desktop-accent hover:underline block text-[13px] mt-1"
+              href={resumeUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="px-3 py-2 text-[12px] bg-desktop-accent/10 text-desktop-accent border border-desktop-accent active:bg-desktop-accent/20 transition-colors"
             >
-              {contact.phone}
+              Resume (PDF) ↓
             </a>
-          )}
-          <div className="flex gap-4 mt-2">
-            {socialLinks.map((link) => (
-              <a
-                key={link.label}
-                href={link.url}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-desktop-accent hover:underline text-[13px]"
+            <a
+              href={`mailto:${contact.email}`}
+              className="px-3 py-2 text-[12px] bg-desktop-surface text-desktop-text border border-desktop-border active:border-desktop-accent transition-colors"
+            >
+              Email me
+            </a>
+          </div>
+        </section>
+
+        <MobileSection id="about" title="About">
+          <div className="space-y-3">
+            {about.split("\n\n").map((para, i) => (
+              <p
+                key={i}
+                className="text-[13px] text-desktop-text/85 leading-relaxed"
               >
-                {link.label}
-              </a>
+                {para}
+              </p>
             ))}
           </div>
-          <a
-            href={resumeUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-block mt-3 px-3 py-1.5 bg-desktop-surface text-desktop-accent border border-desktop-border hover:border-desktop-accent text-[12px]"
-          >
-            Download Resume
-          </a>
-        </section>
+        </MobileSection>
+
+        <MobileSection id="experience" title="Experience">
+          <ExperienceTimeline />
+        </MobileSection>
+
+        <MobileSection id="projects" title="Projects">
+          <ProjectGrid projects={projects} />
+        </MobileSection>
+
+        <MobileSection id="skills" title="Skills">
+          <div className="space-y-3">
+            {skills.map((cat) => (
+              <div key={cat.category}>
+                <p className="text-desktop-muted text-[10px] uppercase tracking-wider mb-1.5">
+                  {cat.category}
+                </p>
+                <TechChips items={cat.items} />
+              </div>
+            ))}
+          </div>
+        </MobileSection>
+
+        <MobileSection id="education" title="Education">
+          <div className="border-l-2 border-desktop-accent/40 pl-3">
+            <div className="flex flex-wrap items-baseline gap-x-2">
+              <p className="text-desktop-text text-[13px] font-medium">
+                {education.institution}
+              </p>
+              <span className="ml-auto text-desktop-dim text-[10px] tabular-nums">
+                {education.period}
+              </span>
+            </div>
+            <p className="text-desktop-accent text-[11.5px] mt-0.5">
+              {education.degree}
+            </p>
+            {education.coursework && (
+              <p className="text-desktop-text/70 text-[12px] mt-1.5 leading-relaxed">
+                {education.coursework}
+              </p>
+            )}
+          </div>
+        </MobileSection>
+
+        <MobileSection id="contact" title="Contact">
+          <ul className="divide-y divide-desktop-border/60 border-y border-desktop-border/60">
+            <li>
+              <a
+                href={`mailto:${contact.email}`}
+                className="flex items-baseline gap-3 py-2.5"
+              >
+                <span className="shrink-0 w-16 text-desktop-dim text-[10px] uppercase tracking-wider">
+                  email
+                </span>
+                <span className="text-desktop-accent text-[12.5px] break-all">
+                  {contact.email}
+                </span>
+              </a>
+            </li>
+            {contact.phone && (
+              <li>
+                <a
+                  href={`tel:${contact.phone.replace(/\s/g, "")}`}
+                  className="flex items-baseline gap-3 py-2.5"
+                >
+                  <span className="shrink-0 w-16 text-desktop-dim text-[10px] uppercase tracking-wider">
+                    phone
+                  </span>
+                  <span className="text-desktop-accent text-[12.5px] tabular-nums">
+                    {contact.phone}
+                  </span>
+                </a>
+              </li>
+            )}
+            {socialLinks.map((link) => (
+              <li key={link.label}>
+                <a
+                  href={link.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-baseline gap-3 py-2.5"
+                >
+                  <span className="shrink-0 w-16 text-desktop-dim text-[10px] uppercase tracking-wider">
+                    {link.label}
+                  </span>
+                  <span className="text-desktop-accent text-[12.5px] break-all">
+                    {link.url.replace(/^https?:\/\//, "")}
+                    <span aria-hidden className="text-desktop-dim ml-1">
+                      ↗
+                    </span>
+                  </span>
+                </a>
+              </li>
+            ))}
+          </ul>
+        </MobileSection>
       </main>
+
+      <footer className="px-4 py-6 text-center text-desktop-dim text-[10px] border-t border-desktop-border mt-4">
+        Best viewed on a desktop — the full version is a Linux desktop you can
+        actually use.
+      </footer>
     </div>
   );
 }

@@ -15,13 +15,18 @@ export interface ExperienceItem {
   company: string;
   role: string;
   period: string;
+  /** True while this is a current role — renders a live dot on the timeline. */
+  current?: boolean;
   bullets: string[];
+  /** Rendered as chips under the bullets. */
+  tech?: string[];
 }
 
 export interface ProjectItem {
   name: string;
   tech: string;
   description: string;
+  year?: string;
   link?: string;
 }
 
@@ -60,22 +65,25 @@ I work mainly in Java, Python, and C++, across Spring Boot, Django, React/Next.j
       company: "HubSpot",
       role: "Software Engineering Intern – Rep Quoting Experience",
       period: "May 2026 – Present",
+      current: true,
       bullets: [
         "Develop backend features supporting sales representatives as they create and manage quotes and deals",
         "Build and maintain Java services in an event-driven architecture, working with Kafka, SQL-backed data flows, and internal APIs",
         "Write automated tests and contribute through code review and CI/CD workflows in a Kubernetes-based engineering environment",
-        "Technologies: Java, Kafka, SQL, Kubernetes, CI/CD",
       ],
+      tech: ["Java", "Kafka", "SQL", "Kubernetes", "CI/CD"],
     },
     {
       company: "Formula Trinity",
       role: "AI Captain",
       period: "Jul 2026 – Present",
+      current: true,
       bullets: [
         "Lead the autonomous software programme across perception, state estimation, path planning, control, simulation, and vehicle integration",
         "Coordinate AI–ADS integration for the team's first human-drivable autonomous vehicle, defining commands, feedback, readiness, and failure behaviour",
         "Contributed to the team's best Formula Student UK autonomous result: 5th overall, 4th in Trackdrive, and 1st in Real-World AI",
       ],
+      tech: ["ROS 2", "C++", "Python", "Simulation"],
     },
     {
       company: "Formula Trinity",
@@ -83,8 +91,8 @@ I work mainly in Java, Python, and C++, across Spring Boot, Django, React/Next.j
       period: "Aug 2025 – Jul 2026",
       bullets: [
         "Led development and validation of a ROS 2 control stack in C++ and Python, including path tracking, speed control, and vehicle command interfaces",
-        "Technologies: C++, Python, ROS 2",
       ],
+      tech: ["C++", "Python", "ROS 2"],
     },
     {
       company: "IBM Academic-Industry Project",
@@ -94,6 +102,7 @@ I work mainly in Java, Python, and C++, across Spring Boot, Django, React/Next.j
         "Led an eight-person Agile team building a novice-friendly TORCS racing simulation package with a GUI, environment setup, and PPO training workflows",
         "Defined sprint scope, acceptance criteria, and documentation for an Ubuntu 22.04-compatible teaching and experimentation platform",
       ],
+      tech: ["Python", "TORCS", "PPO", "Ubuntu"],
     },
     {
       company: "Guidewire Academic-Industry Project",
@@ -103,29 +112,34 @@ I work mainly in Java, Python, and C++, across Spring Boot, Django, React/Next.j
         "Built a project-management dashboard using a React and Material UI frontend with a Django REST backend and JWT authentication",
         "Designed REST APIs and issue-tracking workflows while collaborating through GitLab in an Agile development team",
       ],
+      tech: ["React", "Material UI", "Django REST", "JWT", "GitLab"],
     },
     {
       company: "Trinity College Dublin",
       role: "Teaching Demonstrator – Engineering and Computer Science",
       period: "Sept 2025 – Present",
+      current: true,
       bullets: [
         "Support practical labs in object-oriented programming, system design, and embedded development using C++, Arduino, and Processing",
       ],
+      tech: ["C++", "Arduino", "Processing"],
     },
   ] as ExperienceItem[],
 
   // ——— PROJECTS (aligned with resume) ———
   projects: [
     {
-      name: "Multithreaded HTTP/HTTPS Proxy (2026)",
+      name: "Multithreaded HTTP/HTTPS Proxy",
       tech: "Java, TCP/IP, Sockets",
+      year: "2026",
       description:
         "Java forward proxy supporting standard HTTP requests and HTTPS tunnelling through the CONNECT method. Handles concurrent clients, socket lifecycle, request parsing, bidirectional stream forwarding, and network error responses.",
       link: "https://github.com/dev-j03l/Forward-Web-Proxy-23376190",
     },
     {
-      name: "Formula 1 Statistics Platform (2025)",
+      name: "Formula 1 Statistics Platform",
       tech: "Java, Spring Boot, MariaDB, Next.js",
+      year: "2025",
       description:
         "Full-stack Formula 1 analytics platform built with Spring Boot 3, JPA, Flyway, MariaDB, Next.js 15, and React 19. Ingests and normalizes OpenF1 data through backend services and exposes race, driver, and standings data through REST APIs.",
     },

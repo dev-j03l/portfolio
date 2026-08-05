@@ -6,6 +6,8 @@ const SHORTCUTS = [
   { keys: "Alt + 1–8", desc: "Open app (README, experience, … terminal, Links)" },
   { keys: "Super + 1–8", desc: "Focus or open app" },
   { keys: "Esc", desc: "Close focused window" },
+  { keys: "Double-click", desc: "Maximize / restore a window (title bar)" },
+  { keys: "Drag", desc: "Move a window by its title bar" },
   { keys: "?", desc: "Show this overlay" },
 ];
 
@@ -36,7 +38,7 @@ export function ShortcutOverlay({ isOpen, onClose }: ShortcutOverlayProps) {
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0, scale: 0.96 }}
             transition={{ type: "spring", damping: 25, stiffness: 300 }}
-            className="fixed left-1/2 top-1/2 z-[9999] w-full max-w-sm -translate-x-1/2 -translate-y-1/2 border border-desktop-border bg-desktop-surface p-4 shadow-lg"
+            className="fixed left-1/2 top-1/2 z-[9999] w-full max-w-md -translate-x-1/2 -translate-y-1/2 border border-desktop-accent/40 bg-desktop-surface p-4 window-focused"
           >
             <div className="flex items-center justify-between mb-3">
               <h2 className="text-desktop-accent text-sm font-semibold">
@@ -64,8 +66,13 @@ export function ShortcutOverlay({ isOpen, onClose }: ShortcutOverlayProps) {
                 </li>
               ))}
             </ul>
-            <p className="mt-3 text-desktop-dim text-[10px]">
-              Try the Terminal: type help, whoami, fortune, light, dark
+            <p className="mt-3 pt-3 border-t border-desktop-border text-desktop-dim text-[10px] leading-relaxed">
+              Try the Terminal: <span className="text-desktop-muted">help</span>,{" "}
+              <span className="text-desktop-muted">whoami</span>,{" "}
+              <span className="text-desktop-muted">ls</span>,{" "}
+              <span className="text-desktop-muted">cat</span>,{" "}
+              <span className="text-desktop-muted">fortune</span>. Theme switches
+              from the top-right of the bar.
             </p>
           </motion.div>
         </>

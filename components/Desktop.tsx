@@ -129,7 +129,7 @@ export function Desktop() {
   return (
     <div className="h-screen flex flex-col wallpaper">
       <div className="wallpaper-glow" aria-hidden />
-      <TopBar activeAppTitle={activeTitle} />
+      <TopBar activeAppTitle={activeTitle} openCount={openIds.size} />
 
       <div className="flex-1 relative overflow-hidden pt-4 pl-4 flex flex-col z-[1]">
         <div className="flex flex-wrap gap-3 content-start">
