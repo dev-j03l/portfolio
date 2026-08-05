@@ -33,7 +33,7 @@ Shell: zsh 5.9
 Terminal: archfolio
 Location: Dublin, Ireland
 Role: CS @ Trinity | SWE Intern @ HubSpot
-Control Lead: Formula Trinity
+AI Captain: Formula Trinity
 `;
 
 const COMMANDS: Record<string, { output: string; open?: WindowId }> = {

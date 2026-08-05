@@ -41,70 +41,75 @@ export const portfolioData = {
   profile: {
     name: "Joel Mathew Jojan",
     title:
-      "Computer Science Student | Incoming SWE Intern @ HubSpot",
+      "Computer Science Student | SWE Intern @ HubSpot | AI Captain @ Formula Trinity",
     location: "Dublin, Ireland",
     headline:
-      "Computer Science Student at Trinity College Dublin | Incoming Software Engineering Intern at HubSpot | Control Lead at Formula Trinity",
+      "Computer Science Student at Trinity College Dublin | Software Engineering Intern at HubSpot | AI Captain at Formula Trinity",
   },
 
   // ——— ABOUT (bio / introduction) ———
-  about: `Computer Science student at Trinity College Dublin with experience in full-stack development, control systems, and collaborative engineering projects.
+  about: `Computer Science student at Trinity College Dublin, currently a Software Engineering Intern at HubSpot and AI Captain at Formula Trinity.
 
-I have worked with technologies including C++, Java, Python, React.js, and Django, and have built both software applications and embedded control systems. I have led the control systems team at Formula Trinity and collaborated in agile teams at Guidewire and elsewhere.
+At HubSpot I build backend features for the Rep Quoting Experience, working on Java services in an event-driven architecture with Kafka, SQL-backed data flows, and internal APIs. At Formula Trinity I lead the autonomous software programme across perception, state estimation, path planning, control, simulation, and vehicle integration.
 
-Alongside development, I have experience mentoring students as a module demonstrator and contributing to projects from web apps to autonomous systems.`,
+I work mainly in Java, Python, and C++, across Spring Boot, Django, React/Next.js, and ROS 2. Alongside development, I demonstrate practical labs in Engineering and Computer Science at Trinity.`,
 
   // ——— EXPERIENCE (aligned with resume) ———
   experience: [
     {
-      company: "Guidewire Software",
-      role: "Software Engineering Intern",
-      period: "Jan 2025 – May 2025",
+      company: "HubSpot",
+      role: "Software Engineering Intern – Rep Quoting Experience",
+      period: "May 2026 – Present",
       bullets: [
-        "Collaborated in an 8-member AGILE team to design and deploy a project management dashboard for tracking tasks, deadlines, and team progress",
-        "Developed and optimized Django-based backend services and RESTful APIs, reducing response times by 10%",
-        "Developed responsive user interfaces in React.js, enhancing user experience and interactivity",
-        "Containerized the full-stack application with Docker, streamlining development, testing, and deployment workflows",
-        "Technologies: React, Django, RESTful APIs, Docker, GitLab",
+        "Develop backend features supporting sales representatives as they create and manage quotes and deals",
+        "Build and maintain Java services in an event-driven architecture, working with Kafka, SQL-backed data flows, and internal APIs",
+        "Write automated tests and contribute through code review and CI/CD workflows in a Kubernetes-based engineering environment",
+        "Technologies: Java, Kafka, SQL, Kubernetes, CI/CD",
+      ],
+    },
+    {
+      company: "Formula Trinity",
+      role: "AI Captain",
+      period: "Jul 2026 – Present",
+      bullets: [
+        "Lead the autonomous software programme across perception, state estimation, path planning, control, simulation, and vehicle integration",
+        "Coordinate AI–ADS integration for the team's first human-drivable autonomous vehicle, defining commands, feedback, readiness, and failure behaviour",
+        "Contributed to the team's best Formula Student UK autonomous result: 5th overall, 4th in Trackdrive, and 1st in Real-World AI",
       ],
     },
     {
       company: "Formula Trinity",
       role: "Control Lead",
-      period: "Sept 2024 – Present",
+      period: "Aug 2025 – Jul 2026",
       bullets: [
-        "Designed and implemented control algorithms for an Autonomous Driving System (ADS) using ROS 2.0 and EUFS Simulator",
-        "Optimized ADS algorithms, achieving a 2Hz performance boost in FSUK benchmark testing",
-        "Technologies: C, Python, ROS 2.0, EUFS Simulator",
+        "Led development and validation of a ROS 2 control stack in C++ and Python, including path tracking, speed control, and vehicle command interfaces",
+        "Technologies: C++, Python, ROS 2",
+      ],
+    },
+    {
+      company: "IBM Academic-Industry Project",
+      role: "Product Owner and Software Engineer",
+      period: "Jan 2026 – Apr 2026",
+      bullets: [
+        "Led an eight-person Agile team building a novice-friendly TORCS racing simulation package with a GUI, environment setup, and PPO training workflows",
+        "Defined sprint scope, acceptance criteria, and documentation for an Ubuntu 22.04-compatible teaching and experimentation platform",
+      ],
+    },
+    {
+      company: "Guidewire Academic-Industry Project",
+      role: "Software Engineer",
+      period: "Jan 2025 – May 2025",
+      bullets: [
+        "Built a project-management dashboard using a React and Material UI frontend with a Django REST backend and JWT authentication",
+        "Designed REST APIs and issue-tracking workflows while collaborating through GitLab in an Agile development team",
       ],
     },
     {
       company: "Trinity College Dublin",
-      role: "Module Demonstrator",
-      period: "—",
+      role: "Teaching Demonstrator – Engineering and Computer Science",
+      period: "Sept 2025 – Present",
       bullets: [
-        "Demonstrated for CSU22E03 - Computer Engineering",
-        "Helped students comprehend OOP in C++",
-        "Technologies: C++, OOP",
-      ],
-    },
-    {
-      company: "Project Blue",
-      role: "Web Developer",
-      period: "Oct 2023 – Dec 2023",
-      bullets: [
-        "Migrated static websites to React, modernized codebases, improved maintainability and boosted traffic by 20%",
-        "Technologies: React, JavaScript, HTML, CSS",
-      ],
-    },
-    {
-      company: "Google Inc.",
-      role: "Google AI Hackathon",
-      period: "June 2025",
-      bullets: [
-        "Competed in a highly selective AI Hackathon held in Google IE as part of a team of 5",
-        "Created a Gemini-powered prototype to help increase immersion and storytelling for Dungeons and Dragons",
-        "Technologies: Gemini, React, Firebase",
+        "Support practical labs in object-oriented programming, system design, and embedded development using C++, Arduino, and Processing",
       ],
     },
   ] as ExperienceItem[],
@@ -112,10 +117,17 @@ Alongside development, I have experience mentoring students as a module demonstr
   // ——— PROJECTS (aligned with resume) ———
   projects: [
     {
-      name: "MiaoNance – Investment Notebook",
-      tech: "Django, Next.js, Binance API, Docker",
+      name: "Multithreaded HTTP/HTTPS Proxy (2026)",
+      tech: "Java, TCP/IP, Sockets",
       description:
-        "Full-stack application (in development) with Django backend and Next.js frontend for live crypto market tracking and note-taking. Planning to integrate Binance API to fetch and display real-time coin data.",
+        "Java forward proxy supporting standard HTTP requests and HTTPS tunnelling through the CONNECT method. Handles concurrent clients, socket lifecycle, request parsing, bidirectional stream forwarding, and network error responses.",
+      link: "https://github.com/dev-j03l/Forward-Web-Proxy-23376190",
+    },
+    {
+      name: "Formula 1 Statistics Platform (2025)",
+      tech: "Java, Spring Boot, MariaDB, Next.js",
+      description:
+        "Full-stack Formula 1 analytics platform built with Spring Boot 3, JPA, Flyway, MariaDB, Next.js 15, and React 19. Ingests and normalizes OpenF1 data through backend services and exposes race, driver, and standings data through REST APIs.",
     },
     {
       name: "Premier League Forecasting",
@@ -125,38 +137,42 @@ Alongside development, I have experience mentoring students as a module demonstr
       link: "https://github.com/ZichengLiang/JLLA_Probablity",
     },
     {
-      name: "Project Management Dashboard",
-      tech: "React, Django, RESTful APIs, Docker, GitLab",
-      description:
-        "Project management dashboard built at Guidewire for tracking tasks, deadlines, and team progress. Full-stack with Django backend and React frontend, containerized with Docker.",
-    },
-    {
-      name: "Formula Trinity ADS",
-      tech: "C, Python, ROS 2.0, EUFS Simulator",
-      description:
-        "Control algorithms for an Autonomous Driving System using ROS 2.0 and EUFS Simulator; optimized for FSUK benchmark performance.",
-    },
-    {
       name: "D&D Storytelling with Gemini",
       tech: "Gemini, React, Firebase",
       description:
-        "Gemini-powered prototype to increase immersion and storytelling for Dungeons and Dragons. Built at Google AI Hackathon (Google IE) with a team of 5.",
+        "Gemini-powered prototype to increase immersion and storytelling for Dungeons and Dragons. Built at the Google AI Hackathon (Google IE) with a team of 5.",
       link: "https://github.com/LMol-4/Team8GoogleAIHackathon",
     },
   ] as ProjectItem[],
 
   // ——— SKILLS (aligned with resume) ———
   skills: [
-    { category: "Languages", items: ["Python", "C++", "Java", "JavaScript"] },
-    { category: "Frameworks", items: ["React", "Django", "ROS 2.0"] },
-    { category: "Tools", items: ["Docker", "Git", "GitLab", "GitHub", "Firebase"] },
     {
-      category: "Concepts",
+      category: "Languages",
+      items: ["Java", "Python", "C++", "SQL", "TypeScript", "JavaScript"],
+    },
+    {
+      category: "Frameworks and Systems",
       items: [
-        "Full-stack development",
-        "Embedded systems",
-        "Control algorithms",
-        "Agile development",
+        "Spring Boot",
+        "Django REST Framework",
+        "React",
+        "Next.js",
+        "ROS 2",
+        "Kafka",
+      ],
+    },
+    {
+      category: "Tools and Platforms",
+      items: [
+        "Docker",
+        "Kubernetes",
+        "Git",
+        "GitHub",
+        "GitLab",
+        "Linux",
+        "MariaDB",
+        "CI/CD",
       ],
     },
   ] as SkillsCategory[],
@@ -164,9 +180,10 @@ Alongside development, I have experience mentoring students as a module demonstr
   // ——— EDUCATION (aligned with resume) ———
   education: {
     institution: "Trinity College Dublin",
-    degree: "BA Integrated Computer Science (Expected May 2027)",
-    period: "Sept 2023 – Present",
-    coursework: "Data Structures & Algorithms I/II, Software Engineering, Computer Architecture, Discrete Mathematics",
+    degree: "BA (Mod.) and Master in Computer Science (MCS)",
+    period: "Sept 2023 – May 2028 (Expected)",
+    coursework:
+      "Relevant coursework: Machine Learning, Computer Vision, Computer Graphics, Internet Applications, Artificial Intelligence, Data Structures and Algorithms",
   },
 
   // ——— CONTACT & LINKS (aligned with resume) ———

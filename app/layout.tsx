@@ -14,12 +14,12 @@ const siteUrl = "https://joeljojan.dev";
 export const metadata: Metadata = {
   title: "Joel Mathew Jojan | Portfolio",
   description:
-    "Computer Science Student at Trinity College Dublin | Incoming SWE Intern at HubSpot | Control Lead at Formula Trinity",
+    "Computer Science Student at Trinity College Dublin | Software Engineering Intern at HubSpot | AI Captain at Formula Trinity",
   metadataBase: new URL(siteUrl),
   openGraph: {
     title: "Joel Mathew Jojan | Portfolio",
     description:
-      "Computer Science Student at Trinity College Dublin | Incoming SWE Intern at HubSpot | Control Lead at Formula Trinity",
+      "Computer Science Student at Trinity College Dublin | Software Engineering Intern at HubSpot | AI Captain at Formula Trinity",
     url: siteUrl,
     siteName: "Joel Mathew Jojan",
     type: "website",
@@ -28,7 +28,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "Joel Mathew Jojan | Portfolio",
     description:
-      "Computer Science Student at Trinity College Dublin | Incoming SWE Intern at HubSpot | Control Lead at Formula Trinity",
+      "Computer Science Student at Trinity College Dublin | Software Engineering Intern at HubSpot | AI Captain at Formula Trinity",
   },
   robots: { index: true, follow: true },
 };

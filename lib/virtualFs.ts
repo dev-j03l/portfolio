@@ -10,29 +10,29 @@ function slug(s: string): string {
 
 function shortCompany(company: string): string {
   const map: Record<string, string> = {
-    "Guidewire Software": "guidewire",
+    HubSpot: "hubspot",
     "Formula Trinity": "formula-trinity",
+    "IBM Academic-Industry Project": "ibm",
+    "Guidewire Academic-Industry Project": "guidewire",
     "Trinity College Dublin": "tcd",
-    "Project Blue": "project-blue",
-    "Google Inc.": "google",
   };
   return map[company] ?? slug(company);
 }
 
 function shortRole(role: string): string {
   if (role.includes("Software Engineering Intern")) return "swe-intern";
+  if (role.includes("AI Captain")) return "ai-captain";
   if (role.includes("Control Lead")) return "control-lead";
+  if (role.includes("Product Owner")) return "product-owner";
+  if (role.includes("Software Engineer")) return "swe";
   if (role.includes("Demonstrator")) return "demonstrator";
-  if (role.includes("Web Developer")) return "web-dev";
-  if (role.includes("Hackathon")) return "hackathon";
   return slug(role).slice(0, 20);
 }
 
 function shortProjectName(name: string): string {
-  if (name.includes("MiaoNance")) return "miaonance";
+  if (name.includes("Proxy")) return "http-proxy";
+  if (name.includes("Formula 1")) return "f1-stats";
   if (name.includes("Premier League")) return "premier-league";
-  if (name.includes("Project Management")) return "project-dashboard";
-  if (name.includes("Formula Trinity ADS")) return "formula-ads";
   if (name.includes("D&D Storytelling")) return "dnd-gemini";
   return slug(name).slice(0, 24);
 }
@@ -66,6 +66,7 @@ function projectToText(entry: ProjectItem): string {
     "",
     `  ${entry.description}`,
     "",
+    ...(entry.link ? [`  Link: ${entry.link}`, ""] : []),
   ];
   return lines.join("\n");
 }
