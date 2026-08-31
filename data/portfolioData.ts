@@ -46,16 +46,16 @@ export const portfolioData = {
   profile: {
     name: "Joel Mathew Jojan",
     title:
-      "Computer Science Student | SWE Intern @ HubSpot | AI Captain @ Formula Trinity",
+      "Computer Science Student | AI Captain @ Formula Trinity | ex-HubSpot",
     location: "Dublin, Ireland",
     headline:
-      "Computer Science Student at Trinity College Dublin | Software Engineering Intern at HubSpot | AI Captain at Formula Trinity",
+      "Computer Science Student at Trinity College Dublin | AI Captain at Formula Trinity | Former Software Engineering Intern at HubSpot",
   },
 
   // ——— ABOUT (bio / introduction) ———
-  about: `Computer Science student at Trinity College Dublin, currently a Software Engineering Intern at HubSpot and AI Captain at Formula Trinity.
+  about: `Computer Science student at Trinity College Dublin, currently AI Captain at Formula Trinity and most recently a Software Engineering Intern at HubSpot.
 
-At HubSpot I build backend features for the Rep Quoting Experience, working on Java services in an event-driven architecture with Kafka, SQL-backed data flows, and internal APIs. At Formula Trinity I lead the autonomous software programme across perception, state estimation, path planning, control, simulation, and vehicle integration.
+At HubSpot I built backend features for the Rep Quoting Experience, working on Java services in an event-driven architecture with Kafka, SQL-backed data flows, and internal APIs. At Formula Trinity I lead the autonomous software programme across perception, state estimation, path planning, control, simulation, and vehicle integration.
 
 I work mainly in Java, Python, and C++, across Spring Boot, Django, React/Next.js, and ROS 2. Alongside development, I demonstrate practical labs in Engineering and Computer Science at Trinity.`,
 
@@ -64,12 +64,11 @@ I work mainly in Java, Python, and C++, across Spring Boot, Django, React/Next.j
     {
       company: "HubSpot",
       role: "Software Engineering Intern – Rep Quoting Experience",
-      period: "May 2026 – Present",
-      current: true,
+      period: "May 2026 – Aug 2026",
       bullets: [
-        "Develop backend features supporting sales representatives as they create and manage quotes and deals",
-        "Build and maintain Java services in an event-driven architecture, working with Kafka, SQL-backed data flows, and internal APIs",
-        "Write automated tests and contribute through code review and CI/CD workflows in a Kubernetes-based engineering environment",
+        "Developed backend features supporting sales representatives as they create and manage quotes and deals",
+        "Built and maintained Java services in an event-driven architecture, working with Kafka, SQL-backed data flows, and internal APIs",
+        "Wrote automated tests and contributed through code review and CI/CD workflows in a Kubernetes-based engineering environment",
       ],
       tech: ["Java", "Kafka", "SQL", "Kubernetes", "CI/CD"],
     },

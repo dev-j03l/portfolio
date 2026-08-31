@@ -21,8 +21,8 @@ const NEOFETCH_OUT = `
    /   |  |   \\        Shell     zsh 5.9
   /_-''    ''-_\\       Uptime    since Sept 2023
                        Terminal  archfolio
-                       Role      SWE Intern @ HubSpot
-                       Team      AI Captain @ Formula Trinity
+                       Role      AI Captain @ Formula Trinity
+                       Past      SWE Intern @ HubSpot
                        Studies   CS (MCS) @ Trinity College Dublin
                        Location  Dublin, Ireland
 `;
